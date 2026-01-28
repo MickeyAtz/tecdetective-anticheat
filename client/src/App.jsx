@@ -1,12 +1,8 @@
-import { useState } from "react";
-import "./App.css";
+import { useState } from 'react';
+import Badge from '@/components/atoms/Badge.jsx';
 
 function App() {
-  return (
-    <>
-      <div>FrontEnd</div>
-    </>
-  );
+    return <Badge>Esta es una badge</Badge>;
 }
 
 export default App;

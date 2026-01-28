@@ -1,0 +1,27 @@
+{
+    "name": "tec-detective-app",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MickeyAtz/tecdetective-anticheat.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/MickeyAtz/tecdetective-anticheat/issues"
+    },
+    "homepage": "https://github.com/MickeyAtz/tecdetective-anticheat#readme",
+    "devDependencies": {
+        "prettier": "^3.8.1"
+    },
+    "dependencies": {
+        "eslint-config-prettier": "^10.1.8"
+    }
+}
