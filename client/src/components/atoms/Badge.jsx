@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-//TODO: Crear estilos y definir el tipo de css que utilizaremos (Modules, Styled Components, etc)
 /**
  * Componente Badge para mostrar anotaciones o etiquetas destacadas
  * * @param {Object} props - Propiedades del componente
@@ -12,10 +11,22 @@ import PropTypes from 'prop-types';
 
 const Badge = ({ children, variant = 'primary' }) => {
     //Creación de estilos con tailwindcss
-    //TODO: Estilos css
+    const baseStyles =
+        'inline-flex items-start px-2.5 py-1 rounded-full text-sm';
     //Definición de variantes
-    //TODO: Estilos según la variante
-    return <span className={``}>{children}</span>;
+    const variantStyles = {
+        primary: 'bg-blue-500 text-white',
+        secondary: 'bg-gray-500 text-white',
+        success: 'bg-green-500 text-white ',
+        danger: 'bg-red-500 text-white',
+        warning: 'bg-yellow-500 text-white',
+    };
+
+    return (
+        <span className={`${baseStyles} ${variantStyles[variant]}`}>
+            {children}
+        </span>
+    );
 };
 
 // Validación de Props mediante PropTypes
