@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 /**
- *
+ * Componente Select para la interfaz
  * * @param {Object} props - Propiedades del componente
- * @param {Array<{value: string|number, label: string}>} props.options - Opciones del select
+ * @param {Array<string>} props.options - Opciones del select
  * @param {string} props.label - label del select
  * @param {string} [props.variant='primary'] - Variante del estilo del Select
  * @param {string|number} props.value - valor del select
@@ -30,11 +30,22 @@ const Select = ({
         primary: '',
         secondary: '',
     };
+    // TODO Definicion de estilos del label
+    const labelStyle = '';
 
     return (
         <>
-            {label && <label htmlFor={name}>{label}</label>}
-            <select name={name}>
+            {label && (
+                <label htmlFor={name} className={labelStyle}>
+                    {label}
+                </label>
+            )}
+            <select
+                name={name}
+                className={`${baseStyles} ${variantStyles[variant]}`}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+            >
                 {placeholder && (
                     <option value="" disabled>
                         {placeholder}
@@ -52,7 +63,7 @@ const Select = ({
 
 // Definicion de los Props del Componente
 Select.propTypes = {
-    optoins: PropTypes.arrayOf(),
+    options: PropTypes.arrayOf(PropTypes.string).isRequired,
     label: PropTypes.string.isRequired,
     variant: PropTypes.oneOf(['primary', 'secondary']),
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
