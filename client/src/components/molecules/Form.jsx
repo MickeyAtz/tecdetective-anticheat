@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 //Importacion de Componentes atoms
 import Select from '../atoms/Select';
 import Input from '../atoms/Input';
+import Button from '../atoms/Button';
 
 /**
  * @description Componente Formulario
