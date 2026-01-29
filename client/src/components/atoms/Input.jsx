@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 /**
  * Creación del componente Input para la interfaz
- * @param {Object} props - Propiedades del componente
+ * * @param {Object} props - Propiedades del componente
  * @param {string} props.label - Label del input
  * @param {string} [props.type='text'] - Tipo de input
  * @param {string} [props.placeholder=''] - Placeholder del input
@@ -29,13 +29,21 @@ const Input = ({
 }) => {
     // TODO Definicion de los estilos base
     const baseStyle = '';
+    // TODO Definicion de las variantes
+    const variantStyle = {
+        primary: '',
+        secondary: '',
+    };
     // TODO Definicion de los estilos del label
     const labelStyle = '';
 
     return (
         <div>
             {label && (
-                <label htmlFor={name} className={`${labelStyle}`}>
+                <label
+                    htmlFor={name}
+                    className={`${labelStyle} ${variantStyle[variant]}`}
+                >
                     {label}
                 </label>
             )}

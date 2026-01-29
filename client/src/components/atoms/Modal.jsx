@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 /**
  * Componente Modal para mostrar contenido en una ventana
- * @param {Object} props - Propiedades del componente
+ * * @param {Object} props - Propiedades del componente
  * @param {boolean} props.isOpen - Indica si el modal esta abierto o cerrado
  * @param {function} props.onClose - Funcion encargada de manejar el cierre del modal
  * @param {string} [props.title] - Titulo del modal
@@ -27,11 +27,11 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     if (!show) return null;
 
     // Definicion de estilos
-    // TODO: Estilo del overlay
+    // TODO Estilo del overlay
     const overlayStyles = '';
-    // TODO: Estilo base
+    // TODO Estilo base
     const baseStyles = '';
-    // TODO: Estilo del boton de cierre
+    // TODO Estilo del boton de cierre
     const closeBtnStyle = '';
 
     return (

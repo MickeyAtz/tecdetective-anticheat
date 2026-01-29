@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * @param {'sm' | 'md' | 'lg'} [props.size=md] - Tamaño del botón
  * @param {function} props.onClick - Funcion onClick que sera ejecutada cuando se haga click
  * @param {boolean} [props.disabled=false] - Booleano para deeshabilitar el boton
- * * @return {JSX.Element} - Retorna el componente Boton para la interfaz
+ * @return {JSX.Element} - Retorna el componente Boton para la interfaz
  */
 
 const Button = ({
@@ -27,16 +27,16 @@ const Button = ({
     const hasOnlyIcon = icon && !children;
 
     // Definicion del estilo base del boton
-    // TODO: Completar estilos de Boton
+    // TODO Completar estilos de Boton
     const baseStyles = '';
     // Definicion de variantes
-    // TODO: Completar las variantes del boton
+    // TODO Completar las variantes del boton
     const variantStyles = {};
     // Definicion de tamaños
-    // TODO: Completar los tamaños del botón
+    // TODO Completar los tamaños del botón
     const variantSizes = {};
     // Definición de estilo del botón con ícono
-    // TODO: Definir estilos del botón cuando tenga ícono
+    // TODO Definir estilos del botón cuando tenga ícono
     const iconStyle = '';
 
     return (

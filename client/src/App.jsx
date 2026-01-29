@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import Badge from '@/components/atoms/Badge.jsx';
+import Input from '@/components/atoms/Input.jsx';
 
 function App() {
-    return <Badge>Esta es una badge</Badge>;
+    return <Input label="Este es un input" />;
 }
 
 export default App;
