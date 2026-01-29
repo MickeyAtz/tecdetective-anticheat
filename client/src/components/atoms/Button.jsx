@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 /**
  * Componente Boton versátil para la interfaz principal.
@@ -28,7 +27,7 @@ const Button = ({
 
     // Definicion del estilo base del boton
     // TODO Completar estilos de Boton
-    const baseStyles = '';
+    const baseStyles = 'px-4 py-2 font-semibold rounded ';
     // Definicion de variantes
     // TODO Completar las variantes del boton
     const variantStyles = {};
@@ -50,24 +49,6 @@ const Button = ({
             {children}
         </button>
     );
-};
-
-// Definicion de los Props del componente
-// Definicion de las reglas de validacion
-Button.propTypes = {
-    children: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    variant: PropTypes.oneOf([
-        'primary',
-        'secondary',
-        'success',
-        'danger',
-        'warning',
-    ]),
-    size: PropTypes.oneOf(['sm', 'md', 'lg']),
-    onClick: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    title: PropTypes.string,
 };
 
 export default Button;

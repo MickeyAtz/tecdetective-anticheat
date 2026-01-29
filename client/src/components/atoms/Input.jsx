@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 /**
  * Creación del componente Input para la interfaz
@@ -62,17 +61,5 @@ const Input = ({
     );
 };
 
-//Definicion de los Props del componente
-Input.propTypes = {
-    label: PropTypes.string,
-    type: PropTypes.string,
-    placeholder: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onChange: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    variant: PropTypes.oneOf(['primary', 'secondary']),
-    className: PropTypes.string,
-    autoComplete: PropTypes.string,
-};
 
 export default Input;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 /**
  * Componente Select para la interfaz
@@ -61,15 +60,5 @@ const Select = ({
     );
 };
 
-// Definicion de los Props del Componente
-Select.propTypes = {
-    options: PropTypes.arrayOf(PropTypes.string).isRequired,
-    label: PropTypes.string.isRequired,
-    variant: PropTypes.oneOf(['primary', 'secondary']),
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onChange: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    placeholder: PropTypes.string,
-};
 
 export default Select;

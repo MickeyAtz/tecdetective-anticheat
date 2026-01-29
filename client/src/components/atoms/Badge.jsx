@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 /**
  * Componente Badge para mostrar anotaciones o etiquetas destacadas
@@ -27,19 +26,6 @@ const Badge = ({ children, variant = 'primary' }) => {
             {children}
         </span>
     );
-};
-
-// Validación de Props mediante PropTypes
-// Definición de las reglas de validación
-Badge.propTypes = {
-    children: PropTypes.string.isRequired,
-    variant: PropTypes.oneOf([
-        'primary',
-        'secondary',
-        'success',
-        'danger',
-        'warning',
-    ]),
 };
 
 export default Badge;

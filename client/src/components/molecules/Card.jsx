@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const Card = ({ title, subtitle, children, footer }) => {
     // TODO Definicion de estilos

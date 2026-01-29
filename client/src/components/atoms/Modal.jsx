@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
 /**
  * Componente Modal para mostrar contenido en una ventana
@@ -51,13 +50,5 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     );
 };
 
-// Props del componente
-// Definicion de los Props del componente modal
-Modal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    children: PropTypes.node.isRequired,
-};
 
 export default Modal;

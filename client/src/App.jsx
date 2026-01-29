@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import Input from '@/components/atoms/Input.jsx';
+import Button from '@/components/atoms/Button.jsx';
 
 function App() {
-    return <Input label="Este es un input" />;
+    return (
+        <Button variant="primary" size="md" title="Botón de ejemplo">
+            Este es un botón
+        </Button>
+    );
 }
 
 export default App;

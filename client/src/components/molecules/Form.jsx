@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 
 //Importacion de Componentes atoms
 import Select from '../atoms/Select';
@@ -95,15 +94,6 @@ const Form = ({ fields, initialData = {}, onSubmit, onCancel, children }) => {
             </div>
         </form>
     );
-};
-
-//Definicion de props del componente
-Form.propTypes = {
-    fields: PropTypes.array.isRequired,
-    initialData: PropTypes.object,
-    onSubmit: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    children: PropTypes.node,
 };
 
 export default Form;
