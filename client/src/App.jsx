@@ -2,68 +2,76 @@ import { useState } from 'react';
 import Button from '@/components/atoms/Button.jsx';
 import Form from './components/molecules/Form';
 import Badge from '@/components/atoms/Badge.jsx';
+import StudentList from '@/components/molecules/StudentList.jsx';
+import Card from '@/components/molecules/Card';
+import Modal from '@/components/atoms/Modal';
+
 function App() {
-    const fields = [
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const STUDENTS_MOCK = [
         {
-            name: 'nombre',
-            label: 'Nombre',
-            type: 'text',
-            placeholder: 'Juan',
-            onInput: (e) => {
-                e.target.value = e.target.value.replace(
-                    /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
-                    ''
-                );
-            },
-            minLength: 2,
-            maxLenth: 50,
+            id: 'st-001',
+            nombre: 'Miguel Ángel Álvarez',
+            status: 'success',
+            incidents: [], // Caso: Sin incidentes
         },
         {
-            name: 'apellidos',
-            label: 'Apellidos',
-            type: 'text',
-            placeholder: 'Pérez',
-            onInput: (e) => {
-                e.target.value = e.target.value.replace(
-                    /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
-                    ''
-                );
-            },
-            minLength: 2,
-            maxLenth: 50,
+            id: 'st-002',
+            nombre: 'Alondra García',
+            status: 'warning',
+            incidents: [
+                {
+                    id: 'inc-1',
+                    nombre: 'Cambio de pestaña',
+                    descripcion:
+                        'Se detectó salida del navegador por más de 5 segundos.',
+                    fechaYHora: '10:15 AM',
+                },
+            ],
         },
         {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: 'correo@ejemplo.com',
-            minLength: 2,
-            maxLenth: 50,
+            id: 'st-003',
+            nombre: 'Carlos Tabarez',
+            status: 'danger',
+            incidents: [
+                {
+                    id: 'inc-2',
+                    nombre: 'Objeto no permitido',
+                    descripcion: 'Detección de dispositivo móvil en cámara.',
+                    fechaYHora: '10:42 AM',
+                },
+                {
+                    id: 'inc-3',
+                    nombre: 'Múltiples rostros',
+                    descripcion:
+                        'Se detectó una segunda persona en el encuadre.',
+                    fechaYHora: '10:45 AM',
+                },
+            ],
         },
         {
-            name: 'telefono',
-            label: 'Teléfono',
-            type: 'tel',
-            placeholder: '5551234567',
-            maxLength: 10,
-            title: 'Debe ser un número de 10 dígitos',
-            required: true,
-            onInput: (e) => {
-                e.target.value = e.target.value.replace(/[^0-9]/g, '');
-            },
-        },
-        {
-            name: 'password',
-            label: 'Contraseña',
-            type: 'password',
-            placeholder: '********',
+            id: 'st-004',
+            nombre: 'Betín Álvarez',
+            status: 'success',
+            incidents: [],
         },
     ];
 
     return (
         <>
-            <Form fields={fields}></Form>
-            <Badge>Esta es una badge</Badge>
+            <Card
+                title="Lista de estudiantes"
+                subtitle="Monitoreo de estudiantes"
+            >
+                <StudentList students={STUDENTS_MOCK}></StudentList>
+            </Card>
+            <Button onClick={() => setIsModalOpen(true)}>Abrir modal</Button>
+            <Modal
+                title="Este es un modal de prueba"
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            ></Modal>
         </>
     );
 }
