@@ -66,12 +66,41 @@ function App() {
             >
                 <StudentList students={STUDENTS_MOCK}></StudentList>
             </Card>
-            <Button onClick={() => setIsModalOpen(true)}>Abrir modal</Button>
+             <Button onClick={() => setIsModalOpen(true)} variant="primary">
+                Abrir modal
+            </Button>
+            <Button onClick={() => setIsModalOpen(true)} variant="secondary">
+                Abrir modal
+            </Button>
+             <Button onClick={() => setIsModalOpen(true)} variant="ghost">
+                Abrir modal
+            </Button>
             <Modal
                 title="Este es un modal de prueba"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-            ></Modal>
+            >
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis
+                maiores aperiam sunt doloremque ut nesciunt blanditiis ex
+                voluptatibus vitae? Quaerat, minima iusto. Sapiente ab deserunt
+                quia facere pariatur perspiciatis soluta. Veritatis facere enim
+                autem, velit nulla tempora dicta libero cumque iste ex vel
+                temporibus hic consectetur consequuntur mollitia voluptatibus
+                facilis accusamus voluptas dolorum quasi dolores sed beatae
+                assumenda. Corporis, eius. Fuga inventore aliquid unde
+                blanditiis quam itaque culpa, suscipit officiis voluptate natus
+                sapiente voluptatum ipsam possimus repudiandae repellat
+                cupiditate excepturi sint laborum in quia labore asperiores
+                praesentium soluta dolore! Placeat? Nisi, explicabo dolore,
+                commodi molestias debitis voluptatibus voluptatum ducimus iste
+                deleniti obcaecati rerum quidem officia enim. Nobis harum
+                praesentium ratione molestias nulla nesciunt ipsam tenetur
+                delectus? Ab nam fugit consequuntur. Officiis aliquam hic ipsa
+                exercitationem! Earum, architecto nobis omnis nihil commodi
+                corrupti, magnam aut laborum iste fuga reprehenderit dolorum
+                dicta reiciendis, modi quibusdam ipsum! Ex tempora eum ducimus
+                delectus cumque.
+            </Modal>
         </>
     );
 }

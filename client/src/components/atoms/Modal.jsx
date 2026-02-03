@@ -48,10 +48,9 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                     </h2>
                 )}
                 {children}
-                <button
-                    className={`${closeBtnStyle}`}
-                    onClick={onClose}
-                ></button>
+                <button className={`${closeBtnStyle}`} onClick={onClose}>
+                    X
+                </button>
             </div>
         </div>
     );

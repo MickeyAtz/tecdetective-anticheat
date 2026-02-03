@@ -33,7 +33,6 @@ const Button = ({
         md: 'text-sm px-4 py-2', // El estándar para la mayoría de las UIs
         lg: 'text-base px-6 py-3', // Para CTAs principales
     };
-    // Definición de estilo del botón con ícono
     //  Definir estilos del botón cuando tenga ícono
     const iconStyle = 'aspect-square !p-2';
 
