@@ -66,13 +66,8 @@ function App() {
             >
                 <StudentList students={STUDENTS_MOCK}></StudentList>
             </Card>
-             <Button onClick={() => setIsModalOpen(true)} variant="primary">
-                Abrir modal
-            </Button>
-            <Button onClick={() => setIsModalOpen(true)} variant="secondary">
-                Abrir modal
-            </Button>
-             <Button onClick={() => setIsModalOpen(true)} variant="ghost">
+
+            <Button onClick={() => setIsModalOpen(true)} variant="ghost">
                 Abrir modal
             </Button>
             <Modal
