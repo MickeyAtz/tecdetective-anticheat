@@ -1,17 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-/**
- * Componente Boton versátil para la interfaz principal.
- * * @param {Object} props - Propiedades del componente.
- * @param {React.ReactNode} props.children - Contenido del texto o boton
- * @param {string|null} [props.icon=null] - Icono del boton (Si es que lleva, puede ser null)
- * @param {'primary' | 'secondary' | 'success' | 'danger' | 'warning'} [props.variant='primary'] - Variante del estilo del boton
- * @param {'sm' | 'md' | 'lg'} [props.size=md] - Tamaño del botón
- * @param {function} props.onClick - Funcion onClick que sera ejecutada cuando se haga click
- * @param {boolean} [props.disabled=false] - Booleano para deeshabilitar el boton
- * @return {JSX.Element} - Retorna el componente Boton para la interfaz
- */
 
 const Button = ({
     children,
@@ -27,17 +14,27 @@ const Button = ({
     const hasOnlyIcon = icon && !children;
 
     // Definicion del estilo base del boton
-    // TODO Completar estilos de Boton
-    const baseStyles = '';
+    // Completar estilos de Boton
+    const baseStyles =
+        'font-semibold rounded-lg cursor-pointer transition-all duration-200 flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary disabled:opacity-50 disabled:cursor-not-allowed';
     // Definicion de variantes
-    // TODO Completar las variantes del boton
-    const variantStyles = {};
+    // Completar las variantes del boton
+    const variantStyles = {
+        primary:
+            'bg-brand-primary text-white hover:brightness-110 active:scale-95 shadow-sm',
+        secondary:
+            'bg-brand-secondary text-white hover:brightness-110 active:scale-95 shadow-sm',
+        ghost: 'bg-transparent text-text-primary hover:bg-bg-tertiary',
+    };
     // Definicion de tamaños
-    // TODO Completar los tamaños del botón
-    const variantSizes = {};
-    // Definición de estilo del botón con ícono
-    // TODO Definir estilos del botón cuando tenga ícono
-    const iconStyle = '';
+    //  Completar los tamaños del botón
+    const variantSizes = {
+        sm: 'text-xs px-3 py-1.5', // Para micro-interacciones
+        md: 'text-sm px-4 py-2', // El estándar para la mayoría de las UIs
+        lg: 'text-base px-6 py-3', // Para CTAs principales
+    };
+    //  Definir estilos del botón cuando tenga ícono
+    const iconStyle = 'aspect-square !p-2';
 
     return (
         <button
@@ -50,24 +47,6 @@ const Button = ({
             {children}
         </button>
     );
-};
-
-// Definicion de los Props del componente
-// Definicion de las reglas de validacion
-Button.propTypes = {
-    children: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    variant: PropTypes.oneOf([
-        'primary',
-        'secondary',
-        'success',
-        'danger',
-        'warning',
-    ]),
-    size: PropTypes.oneOf(['sm', 'md', 'lg']),
-    onClick: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    title: PropTypes.string,
 };
 
 export default Button;

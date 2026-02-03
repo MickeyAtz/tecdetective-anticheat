@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 
 //Importacion de Componentes atoms
 import Select from '../atoms/Select';
 import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 
-/**
- * @description Componente Formulario
- * @param {Object} props - Props del componente
- * @param {Array}  props.fields - Campos del formulario
- * @param {Array} props.initialData - Datos iniciales del formulario
- * @param {function} props.onSubmit - Funcion al enviar el formulario
- * @param {function} props.onCancel - Funcion al cancelar el formulario
- * @param {React.ReactNode} props.children - Elementos hijos personalziados
- * @returns {JSX.Element} Componente Formulario
- */
-
-const Form = ({ fields, initialData = {}, onSubmit, onCancel, children }) => {
+const Form = ({ fields, initialData = {}, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState({});
 
     useEffect(() => {
@@ -36,74 +24,64 @@ const Form = ({ fields, initialData = {}, onSubmit, onCancel, children }) => {
         onSubmit(formData);
     };
 
-    // TODO Definicion de estilo base
-    const baseStyles = '';
-    // TODO Definicion de estilo acciones
-    const styleActions = '';
+    // Definicion de estilo base
+    const baseStyles = 'w-full flex flex-col gap-4 py-2';
+    // Definicion de estilo acciones
+    const styleActions =
+        'flex items-center justify-end gap-3 mt-6 pt-4 border-t border-border-primary';
 
     return (
         <form className={baseStyles} onSubmit={handleSubmit}>
-            {fields.map((field) => {
-                const value = formData[field.name] || '';
+            <div className="flex flex-col gap-1">
+                {fields.map((field) => {
+                    const value = formData[field.name] || '';
 
-                if (field.type === 'select') {
+                    if (field.type === 'select') {
+                        return (
+                            <Select
+                                options={field.options}
+                                label={field.label}
+                                name={field.name}
+                                value={value}
+                                onChange={(value) =>
+                                    handleChange(field.name, value)
+                                }
+                                placeholder={field.placeholder}
+                            ></Select>
+                        );
+                    }
+
                     return (
-                        <Select
-                            options={field.options}
-                            label={field.label}
+                        <Input
+                            type={field.type}
                             name={field.name}
+                            label={field.label}
                             value={value}
                             onChange={(e) =>
                                 handleChange(field.name, e.target.value)
                             }
                             placeholder={field.placeholder}
-                        ></Select>
+                            {...field}
+                        ></Input>
                     );
-                }
-
-                return (
-                    <Input
-                        type={field.type}
-                        name={field.name}
-                        label={field.label}
-                        value={value}
-                        onChange={(e) =>
-                            handleChange(field.name, e.target.value)
-                        }
-                        placeholder={field.placeholder}
-                        {...field}
-                    ></Input>
-                );
-            })}
+                })}
+            </div>
             <div className={styleActions}>
-                {children ? (
-                    children
-                ) : (
-                    <>
-                        <Button type="submit" variant="primary">
-                            Guardar
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={onCancel}
-                        >
-                            Cancelar
-                        </Button>
-                    </>
-                )}
+                <>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={onCancel}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button type="submit" variant="primary">
+                        Guardar Cambios
+                    </Button>
+                </>
             </div>
         </form>
     );
-};
-
-//Definicion de props del componente
-Form.propTypes = {
-    fields: PropTypes.array.isRequired,
-    initialData: PropTypes.object,
-    onSubmit: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    children: PropTypes.node,
 };
 
 export default Form;

@@ -1,3 +1,57 @@
 @import 'tailwindcss';
 
-/*TODO: Creación de variables globales y estilos globales*/
+body {
+    background-color: #ffffff;
+}
+
+@theme {
+    /* --- SUPERFICIES (FONDOS) --- */
+    --color-bg-primary: #ffffff; /* Fondo de la app */
+    --color-bg-secondary: #f9fafb; /* Cards, Sidebars */
+    --color-bg-tertiary: #f3f4f6; /* Inputs, Hovers */
+
+    /* --- TEXTO --- */
+    --color-text-primary: #111827; /* Títulos y cuerpo principal */
+    --color-text-secondary: #4b5563; /* Subtítulos, labels */
+    --color-text-tertiary: #9ca3af; /* Placeholders, texto desactivado */
+
+    /* --- MARCA / ACCIÓN --- */
+    --color-brand-primary: #3b82f6;
+    --color-brand-secondary: #1e40af;
+
+    /* --- ESTADOS --- */
+    --color-status-success: #5cb85c;
+    --color-status-danger: #d9534f;
+    --color-status-warning: #f0ad4e;
+
+    /* --- BORDE --- */
+    --color-border-primary: #e5e7eb;
+
+    /* --- TAMAÑOS DE FUENTE --- */
+    --text-xs: 0.75rem; /* 12px - Notas y captions */
+    --text-sm: 0.875rem; /* 14px - Texto secundario o interfaces densas */
+    --text-base: 1rem; /* 16px - El estándar para cuerpo de texto */
+    --text-lg: 1.125rem; /* 18px - Introducciones o subtítulos pequeños */
+}
+
+/* --- TEMA OSCURO --- */
+.dark {
+    --color-bg-primary: #0f172a;
+    --color-bg-secondary: #1e293b;
+    --color-bg-tertiary: #334155;
+
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+    --color-text-tertiary: #94a3b8;
+
+    --color-brand-primary: #60a5fa;
+    --color-brand-secondary: #3b82f6;
+
+    --color-border-primary: #334155;
+}
+
+@layer base {
+    body {
+        @apply bg-bg-primary text-text-primary transition-colors duration-300;
+    }
+}
