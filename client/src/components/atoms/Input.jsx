@@ -1,65 +1,43 @@
 import React from 'react';
 
-/**
- * Creación del componente Input para la interfaz
- * * @param {Object} props - Propiedades del componente
- * @param {string} props.label - Label del input
- * @param {string} [props.type='text'] - Tipo de input
- * @param {string} [props.placeholder=''] - Placeholder del input
- * @param {string|number} props.value - valor del input
- * @param {function} props.onChange - Funcion onChange del input
- * @param {string} props.name - Nombre del input
- * @param {'primary'|'secondary'} [props.variant='primary'] - Variante del estilo del input
- * @param {string} props.className - Clase adicional para el input
- * @param {string} props.autoComplete - Atributo autocomplete del input
- * @returns {JSX.Element} - Retorna el componente Input
- */
 const Input = ({
-    label,
-    type = 'text',
-    placeholder = '',
-    value,
-    onChange,
-    name,
-    variant = 'primary',
-    className,
-    autoComplete,
-    ...props
+    label, //label del input
+    type = 'text', // tipo de input
+    placeholder = '', // placeholder
+    value, //value
+    onChange, // funcion on change
+    name, //Nombre dle input
+    variant = 'primary', //Variante del input
+    className, //clase del input
+    autoComplete, // Propiedad autoComplete del input
+    ...props // Reesto de propiedades del input
 }) => {
-    // TODO Definicion de los estilos base
-    const baseStyle = '';
-    // TODO Definicion de las variantes
-    const variantStyle = {
-        primary: '',
-        secondary: '',
-    };
-    // TODO Definicion de los estilos del label
-    const labelStyle = '';
+    // Estilos para el texto de la etiqueta
+    const labelStyle =
+        'block text-sm font-semibold text-text-secondary mb-1.5 ml-0.5';
+
+    // Estilos para el campo de entrada
+    const baseStyle = `
+        w-full px-4 py-2.5 
+        rounded-lg border-2 border-transparent 
+        bg-bg-tertiary text-text-primary 
+        placeholder:text-text-tertiary 
+        outline-none transition-all duration-200 
+        focus:border-brand-primary focus:bg-bg-primary 
+        focus:ring-4 focus:ring-brand-primary/10
+        disabled:opacity-50 disabled:cursor-not-allowed
+    `;
 
     return (
-        <div>
+        <div className="w-full mb-4">
             {label && (
-                <label
-                    htmlFor={name}
-                    className={`${labelStyle} ${variantStyle[variant]}`}
-                >
+                <label htmlFor={name} className={labelStyle}>
                     {label}
                 </label>
             )}
-            <input
-                type={type}
-                name={name}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                className={`${baseStyle} ${variantStyle[variant]}`}
-                autoComplete={autoComplete}
-                required={true}
-                {...props}
-            />
+            <input id={name} name={name} className={baseStyle} {...props} />
         </div>
     );
 };
-
 
 export default Input;

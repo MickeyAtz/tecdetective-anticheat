@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-/**
- * Componente Modal para mostrar contenido en una ventana
- * * @param {Object} props - Propiedades del componente
- * @param {boolean} props.isOpen - Indica si el modal esta abierto o cerrado
- * @param {function} props.onClose - Funcion encargada de manejar el cierre del modal
- * @param {string} [props.title] - Titulo del modal
- * @param {React.ReactNode} props.children - Contenido del modal
- * @returns {JSX.Element|null} - Retorna el componente Modal o nulll si no esta abierto
- */
 const Modal = ({ isOpen, onClose, title, children }) => {
     const [show, setShow] = useState(false);
 
@@ -26,12 +17,24 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     if (!show) return null;
 
     // Definicion de estilos
-    // TODO Estilo del overlay
-    const overlayStyles = '';
-    // TODO Estilo base
-    const baseStyles = '';
-    // TODO Estilo del boton de cierre
-    const closeBtnStyle = '';
+    const overlayStyles = `
+        fixed inset-0 z-50 flex items-center justify-center p-4 
+        bg-black/40 backdrop-blur-xs transition-opacity duration-300
+        ${isOpen ? 'opacity-100' : 'opacity-0'}
+    `;
+
+    const baseStyles = `
+        relative w-full max-w-md p-6 rounded-xl shadow-xl 
+        bg-bg-primary border border-border-primary
+        transform transition-all duration-300
+        ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}
+    `;
+
+    const closeBtnStyle = `
+        absolute top-3 right-3 w-8 h-8 flex items-center justify-center
+        rounded-lg text-text-tertiary hover:bg-bg-tertiary hover:text-text-primary
+        transition-colors cursor-pointer
+    `;
 
     return (
         <div className={`${overlayStyles}`} onClick={onClose}>
@@ -39,7 +42,11 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                 className={`${baseStyles}`}
                 onClick={(e) => e.stopPropagation()}
             >
-                {title && <h2>{title}</h2>}
+                {title && (
+                    <h2 className="text-xl font-bold text-text-primary mb-4">
+                        {title}
+                    </h2>
+                )}
                 {children}
                 <button
                     className={`${closeBtnStyle}`}
@@ -49,6 +56,5 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         </div>
     );
 };
-
 
 export default Modal;
