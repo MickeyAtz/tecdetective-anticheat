@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+
+// Importación de Componentes
 import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
 import IncidentList from '@/components/molecules/IncidentList';

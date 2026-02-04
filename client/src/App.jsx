@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Button from '@/components/atoms/Button.jsx';
-import Form from './components/molecules/Form';
+import Form from '@/components/molecules/Form';
 import Badge from '@/components/atoms/Badge.jsx';
 import StudentList from '@/components/molecules/StudentList.jsx';
 import Card from '@/components/molecules/Card';
@@ -66,13 +66,13 @@ function App() {
             >
                 <StudentList students={STUDENTS_MOCK}></StudentList>
             </Card>
-             <Button onClick={() => setIsModalOpen(true)} variant="primary">
+            <Button onClick={() => setIsModalOpen(true)} variant="primary">
                 Abrir modal
             </Button>
             <Button onClick={() => setIsModalOpen(true)} variant="secondary">
                 Abrir modal
             </Button>
-             <Button onClick={() => setIsModalOpen(true)} variant="ghost">
+            <Button onClick={() => setIsModalOpen(true)} variant="ghost">
                 Abrir modal
             </Button>
             <Modal

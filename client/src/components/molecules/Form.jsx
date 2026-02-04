@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 //Importacion de Componentes atoms
-import Select from '../atoms/Select';
-import Input from '../atoms/Input';
-import Button from '../atoms/Button';
+import Select from '@/components/atoms/Select';
+import Input from '@/components/atoms/Input';
+import Button from '@/components/atoms/Button';
 
 const Form = ({ fields, initialData = {}, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState({});
