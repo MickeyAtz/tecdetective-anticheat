@@ -1,4 +1,6 @@
 import React from 'react';
+
+// Importación de componentes
 import StudentListItem from '@/components/molecules/StudentListItem';
 
 const StudentList = ({ students }) => {

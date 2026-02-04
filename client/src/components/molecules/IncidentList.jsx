@@ -1,5 +1,8 @@
 import React from 'react';
+
+//Importación de componentes
 import IncidentListItem from '@/components/atoms/IncidentListItem';
+
 const IncidentList = ({ incidents }) => {
     const styleList = `mt-4 ml-4 p-4 bg-bg-tertiary rounded-lg border-l-4 border-status-warning`;
 
