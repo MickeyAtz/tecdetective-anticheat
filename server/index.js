@@ -1,7 +1,10 @@
-import express from "express";
-import cors from "cors";
+import express from 'express';
+import { swaggerDocs, swaggerUi } from './config/swagger.js';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
-import dotenv from "dotenv";
+// Importacion de rutas del servidor
+import authRouter from './routes/auth.routes.js';
 
 dotenv.config();
 
@@ -12,16 +15,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-//Ruta principal provicional 
-app.get("/", (req, res) => {
-  res.send("Servidor corriendo");
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+//Ruta principal provicional
+app.get('/', (req, res) => {
+    res.send('Servidor corriendo');
 });
 
-//Rutas de autenticación 
+//Rutas de autenticación
 //TODO: Configuración de Rutas y creación de endpoints
-
+app.use('/api/v1/auth', authRouter);
 
 const PORT = process.env.BACKEND_PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en: https://localhost:${PORT}`);
+    console.log(`Servidor corriendo en: https://localhost:${PORT}`);
 });
