@@ -3,7 +3,7 @@ export const STUDENTS_MOCK = [
         id: 'st-001',
         nombre: 'Miguel Ángel Álvarez',
         status: 'success',
-        incidents: [], // Caso: Sin incidentes
+        incidents: [], 
     },
     {
         id: 'st-002',
