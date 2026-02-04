@@ -7,7 +7,7 @@ const swaggerOptions = {
         info: {
             title: 'Tec Detective API',
             version: '1.0.0',
-            description: 'API para el monitoreo de exámenes - ITJMM',
+            description: 'API para el monitoreo de exámenes - ITSJ',
         },
         servers: [
             {

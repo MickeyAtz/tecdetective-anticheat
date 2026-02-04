@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 // Importacion de rutas del servidor
 import authRouter from './routes/auth.routes.js';
+import profesorRouter from './routes/profesores.routes.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 //Rutas de autenticación
 //TODO: Configuración de Rutas y creación de endpoints
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/profesor', profesorRouter);
 
 const PORT = process.env.BACKEND_PORT || 5000;
 app.listen(PORT, () => {
