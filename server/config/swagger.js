@@ -14,6 +14,15 @@ const swaggerOptions = {
                 url: 'http://localhost:3000',
             },
         ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
     },
     // fíjate en los corchetes [] aquí abajo
     apis: ['./routes/*.js'],

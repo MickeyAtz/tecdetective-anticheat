@@ -1,4 +1,7 @@
 import express from 'express';
+
+import { verifyToken } from '../middleware/auth.js';
+
 import {
     createProfesor,
     editProfesor,
@@ -8,12 +11,16 @@ import {
 
 const router = express.Router();
 
+router.use(verifyToken);
+
 /**
  * @openapi
  * /api/v1/profesor/:
  *   post:
  *     summary: Crear profesor (dar de alta en db)
  *     tags: [CRUD - Profesores]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -50,6 +57,8 @@ router.post('/', createProfesor);
  *  put:
  *    summary: Editar un profesor (Actualizar nombre y email)
  *    tags: [CRUD - Profesores]
+ *    security:
+ *       - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -90,6 +99,8 @@ router.put('/:id', editProfesor);
  *    summary: Baja de profesor (Soft Delete)
  *    description: Realiza un borrado lógico marcando la columna deleted at sin eliminar la evidencia.
  *    tags: [CRUD - Profesores]
+ *    security:
+ *       - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -112,6 +123,8 @@ router.put('/baja/:id', deleteProfesor);
  *    summary: Obtener todos los profesores
  *    description: Obtener todos los profesores de la base de datos
  *    tags: [CRUD - Profesores]
+ *    security:
+ *       - bearerAuth: []
  *    responses:
  *      200:
  *        description: Lista de profesores obtenida correctamente
