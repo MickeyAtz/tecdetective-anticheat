@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import authRouter from './routes/auth.routes.js';
 import profesorRouter from './routes/profesores.routes.js';
 import materiaRouter from './routes/materias.routes.js';
+import grupoRouter from './routes/grupos.routes.js';
 dotenv.config();
 
 //inicialización de la app y configuración de cors y json
@@ -28,6 +29,8 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/profesor', profesorRouter);
 app.use('/api/v1/materia', materiaRouter);
+app.use('/api/v1/grupo', grupoRouter);
+
 
 const PORT = process.env.BACKEND_PORT || 5000;
 app.listen(PORT, () => {

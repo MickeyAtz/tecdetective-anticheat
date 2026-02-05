@@ -4,7 +4,7 @@ import { verifyToken } from '../middleware/auth.js';
 
 import {
     createProfesor,
-    editProfesor,
+    modifyProfesor,
     deleteProfesor,
     getProfesores,
 } from '../controllers/profesores.controller.js';
@@ -54,43 +54,43 @@ router.post('/', createProfesor);
 /**
  * @openapi
  * /api/v1/profesor/{id}:
- *  put:
- *    summary: Editar un profesor (Actualizar nombre y email)
- *    tags: [CRUD - Profesores]
- *    security:
- *       - bearerAuth: []
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        schema:
- *          type: string
- *        description: ID del profesor a editar
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            required:
- *              - nombre
- *              - email
- *            properties:
- *              nombre:
- *                type: string
- *                example: "Miguel Angel Alvarez Tabarez"
- *              email:
- *                type: string
- *                example: "correo@dominio.com"
- *    responses:
- *      200:
- *        description: Profesor actualizado correctamente
- *      400:
- *        description: El email ya está en uso por otra cuenta
- *      500:
- *        description: Fallo en el servidor
+ *   put:
+ *     summary: Editar un profesor
+ *     tags: [CRUD - Profesores]
+ *     security:
+ *        - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del profesor a editar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nombre
+ *               - email
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: "Miguel Angel Alvarez Tabarez"
+ *               email:
+ *                 type: string
+ *                 example: "correo@dominio.com"
+ *     responses:
+ *       200:
+ *         description: Profesor actualizado correctamente
+ *       400:
+ *         description: El email ya está en uso por otra cuenta
+ *       500:
+ *         description: Fallo en el servidor
  */
-router.put('/:id', editProfesor);
+router.put('/:id', modifyProfesor);
 
 /**
  * @openapi
@@ -118,7 +118,7 @@ router.put('/baja/:id', deleteProfesor);
 
 /**
  * @openapi
- * /api/v1/profesor:
+ * /api/v1/profesor/:
  *  get:
  *    summary: Obtener todos los profesores
  *    description: Obtener todos los profesores de la base de datos

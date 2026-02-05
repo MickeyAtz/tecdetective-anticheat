@@ -31,7 +31,7 @@ export const createProfesor = async (req, res) => {
 };
 
 // Editar profesor
-export const editProfesor = async (req, res) => {
+export const modifyProfesor = async (req, res) => {
     const { id } = req.params;
     const { nombre, email } = req.body;
 
