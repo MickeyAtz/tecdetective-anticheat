@@ -1,69 +1,135 @@
-import { useRef, useState, useEffect } from 'react';
-import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '@/hooks/useAuth';
+import axios from '@/api/axios.js';
 
 import Input from '@/components/atoms/Input.jsx';
-
-const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+import Button from '@/components/atoms/Button.jsx';
+import Alerta from '@/components/atoms/Alerta.jsx';
 
 const RegisterPage = () => {
-    const userRef = useRef();
-    const errRef = useRef();
+    // Definicion de estados (React)
+    const [dataForm, setDataForm] = useState({
+        nombre: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const [user, setUser] = useState('');
-    const [validName, setValidName] = useState(false);
-    const [userFocus, setUserFocus] = useState(false);
+    const { setAuth } = useAuth();
+    const navigate = useNavigate();
 
-    const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-    const [pwdFocus, setPwdFocus] = useState(false);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setError('');
+        setDataForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
-    const [matchPwd, setMatchPwd] = useState('');
-    const [validMatch, setValidMatch] = useState(false);
-    const [matchFocus, setMatchFocus] = useState(false);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
 
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+        if (dataForm.password !== dataForm.confirmPassword) {
+            setError('Las contraseñas no coinciden.');
+            return;
+        }
 
-    useEffect(() => {
-        useRef.current.focus();
-    }, []);
+        try {
+            const response = await axios.post('/auth/profesor', JSON.stringify(dataForm), {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true,
+            });
 
-    useEffect(() => {
-        const result = USER_REGEX.test(user);
-        console.log(result);
-        console.log(user);
-        setValidName(result);
-    }, []);
+            if (response?.status === 201) {
+                const responseLogin = await axios.post(
+                    '/auth/login',
+                    JSON.stringify({ email: dataForm.email, password: dataForm.password }),
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials: true,
+                    }
+                );
 
-    useEffect(() => {
-        const result = PWD_REGEX.test(pwd);
-        console.log(result);
-        console.log(pwd);
-        setValidPwd(result);
-        const match = pwd === matchPwd;
-        setValidMatch(match);
-    }, [pwd, matchPwd]);
+                const accessToken = response?.data?.accessTokens;
 
-    useEffect(() => {
-        setErrMsg('');
-    }, [user, pwd, matchPwd]);
+                setAuth({
+                    email: responseLogin?.data?.email,
+                    accessToken,
+                    nombre: responseLogin?.data?.nombre,
+                });
+
+                console.log('Registro correcto.');
+
+                navigate('/dashboard');
+            }
+        } catch (error) {
+            if (!error?.response) {
+                setError('Servidor sin respuseta.');
+            } else if (error.response?.status === 409) {
+                setError('El correo ya se encuentra en uso.');
+            } else {
+                setError('Error al dar de alta.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
-        <section>
-            <p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live="assertive">
-                {errMsg}
-            </p>
-            <h1>Register</h1>
-            <form>
-                <Input 
-                    type="text" 
-                    label="Nombre de usuario:"
-                >
+        <>
+            <form onSubmit={handleSubmit}>
+                <h2>Registrar nuevo usuario</h2>
+                {error && <Alerta type={error}>{error}</Alerta>}
 
-                </Input>
+                <Input
+                    type="text"
+                    label="Nombre Completo"
+                    name="nombre"
+                    placeholder="Ingresa tu nombre completo"
+                    value={dataForm.nombre}
+                    onChange={handleChange}
+                    required
+                />
+                <Input
+                    type="email"
+                    label="Correo Electrónico"
+                    name="email"
+                    placeholder="Ingresa tu correo electrónico"
+                    value={dataForm.email}
+                    onChange={handleChange}
+                    autoComplete="username"
+                    required
+                />
+                <Input
+                    type="password"
+                    label="Contraseña"
+                    name="password"
+                    placeholder="Ingresa una contraseña"
+                    value={dataForm.password}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                    required
+                />
+                <Input
+                    type="password"
+                    label="Confirmar contraseña"
+                    name="confirmPassword"
+                    placeholder="Confirma la contraseña"
+                    value={dataForm.confirmPassword}
+                    onChange={handleChange}
+                    autoComplete="confirm-password"
+                    required
+                />
+                <div className="flex justify-end ">
+                    <Button size="lg">{isLoading ? 'Registrando...' : 'Registrar'}</Button>
+                </div>
             </form>
-        </section>
+        </>
     );
 };
 

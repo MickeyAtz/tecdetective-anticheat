@@ -15,44 +15,6 @@ router.use(verifyToken);
 
 /**
  * @openapi
- * /api/v1/profesor/:
- *   post:
- *     summary: Crear profesor (dar de alta en db)
- *     tags: [CRUD - Profesores]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - nombre
- *               - email
- *               - password
- *             properties:
- *               nombre:
- *                 type: string
- *                 example: "Miguel Angel Alvarez Tabarez"
- *               email:
- *                 type: string
- *                 example: "correo@dominio.com"
- *               password:
- *                 type: string
- *                 example: "password123"
- *     responses:
- *       201:
- *         description: Profesor creado exitosamente
- *       400:
- *         description: El correo ya esta registrado
- *       500:
- *         description: Fallo en el servidor
- */
-router.post('/', createProfesor);
-
-/**
- * @openapi
  * /api/v1/profesor/{id}:
  *   put:
  *     summary: Editar un profesor

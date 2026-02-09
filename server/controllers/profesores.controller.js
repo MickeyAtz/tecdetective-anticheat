@@ -10,7 +10,7 @@ export const createProfesor = async (req, res) => {
         const userExist = await pool.query('SELECT * FROM profesores WHERE email = $1', [email]);
 
         if (userExist.rows.length > 0) {
-            return res.status(400).json({ message: 'El correo ya está registrado.' });
+            return res.status(409).json({ message: 'El correo ya está registrado.' });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -23,7 +23,7 @@ export const createProfesor = async (req, res) => {
 
         const user = nuevo[0];
 
-        return res.status(200).json({ message: 'Profesor creado exitosamente.', user });
+        return res.status(201).json({ message: 'Profesor creado exitosamente.', user });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error en el servidor.' });

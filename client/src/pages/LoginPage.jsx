@@ -3,16 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from '@/api/axios.js';
 import useAuth from '@/hooks/useAuth.js';
 
+// Importacion de componentes
 import Button from '@/components/atoms/Button.jsx';
 import Input from '@/components/atoms/Input.jsx';
+import Alerta from '@/components/atoms/Alerta.jsx';
 
 const Login = () => {
-    const navigate = useNavigate();
+    // Estados
     const [dataForm, setDataForm] = useState({ email: '', password: '' });
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
+
+    // hooks
     const { setAuth } = useAuth();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,19 +26,30 @@ const Login = () => {
         }));
     };
 
+    // Quitar la alerta error al comenzar a teclear
+    useEffect(() => {
+        setError('');
+    }, [dataForm.email, dataForm.password]);
+
+    // Handle submit
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
         try {
+            // Solicitud al backend
             const response = await axios.post('/auth/login', JSON.stringify(dataForm), {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
             });
 
+            // Access token
             const accessToken = response?.data?.accessToken;
 
-            setAuth({ email: dataForm.email, accessToken });
+            // Alimentamos el contex de react (authContext)
+            setAuth({ email: dataForm.email, accessToken, nombre: response?.data?.nombre });
 
+            // Nos movemos al dashboard (pagina principal)
             navigate('/dashboard');
         } catch (error) {
             if (!error?.response) {
@@ -44,18 +59,16 @@ const Login = () => {
             } else {
                 setError('Error en el inicio de sesión.');
             }
+        } finally {
+            setIsLoading(false);
         }
     };
-
-    // Definicion de estilos de la paagina
-    const errorStyle = '';
 
     return (
         <>
             <form onSubmit={handleSubmit}>
                 <h2>Inicio de sesión</h2>
-                <br />
-                {error && <p className={errorStyle}>{error}</p>}
+                {error && <Alerta type="error">{error}</Alerta>}
 
                 <Input
                     name="email"

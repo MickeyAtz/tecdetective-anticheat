@@ -14,8 +14,9 @@ export const authLogin = async (req, res) => {
     }
 
     try {
+        // Verificacion del correo
         const { rows } = await pool.query(
-            'SELECT * FROM profesores WHERE LOWER(email) = LOWER($1)',
+            'SELECT * FROM profesores WHERE LOWER(email) = LOWER($1) AND deleted_at IS NULL',
             [email]
         );
 
@@ -39,11 +40,13 @@ export const authLogin = async (req, res) => {
             expiresIn: '1d',
         });
 
+        // Insercion del token a la base de datos (auth_token)
         await pool.query('INSERT INTO auth_tokens(professor_id, refresh_token) VALUES($1, $2)', [
             cuenta.id,
             refreshToken,
         ]);
 
+        // Configuracion de la cookie
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
             secure: true,
@@ -51,7 +54,15 @@ export const authLogin = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-        return res.status(200).json({ accessToken });
+        // Retorno del token
+        return res.status(200).json({
+            accessToken,
+            cuenta: {
+                id: cuenta.id,
+                nombre: cuenta.nombre,
+                email: cuenta.email,
+            },
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error en el servidor.' });
