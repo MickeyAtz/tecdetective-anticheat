@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from '@/api/axios.js';
+import useAuth from '@/hooks/useAuth.js';
 
 import Button from '@/components/atoms/Button.jsx';
 import Input from '@/components/atoms/Input.jsx';
@@ -10,6 +12,7 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const { setAuth } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,28 +22,30 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(dataForm);
+
+        try {
+            const response = await axios.post('/auth/login', JSON.stringify(dataForm), {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true,
+            });
+
+            const accessToken = response?.data?.accessToken;
+
+            setAuth({ email: dataForm.email, accessToken });
+
+            navigate('/dashboard');
+        } catch (error) {
+            if (!error?.response) {
+                setError('Servidor sin respuesta.');
+            } else if (error.response?.status === 401) {
+                setError('Usuario o contraseña incorrectos.');
+            } else {
+                setError('Error en el inicio de sesión.');
+            }
+        }
     };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setIsSaving(true);
-    //     setIsLoading(true);
-    //     setError('');
-
-    //     const payload = { ...formData };
-
-    //     try {
-    //     } catch (error) {
-    //         setError('Error al iniciar sesión. Por favor, intenta de nuevo.');
-    //         console.error(error);
-    //     } finally {
-    //         setIsSaving(false);
-    //         setIsLoading(false);
-    //     }
-    // };
 
     // Definicion de estilos de la paagina
     const errorStyle = '';

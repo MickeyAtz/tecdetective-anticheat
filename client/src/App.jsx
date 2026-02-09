@@ -8,6 +8,9 @@ import LoginPage from '@/pages/LoginPage.jsx';
 import AuthLayout from '@/components/templates/AuthLayout.jsx';
 import MainLayout from '@/components/templates/MainLayout.jsx';
 
+// Importacion de la capa de seguridad
+import PersistLogin from '@/components/auth/PersistLogin.jsx';
+
 // Importacion de mocks (test cases)
 import { STUDENTS_MOCK } from '@/mocks/students';
 
@@ -15,14 +18,14 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* Rutas de autenticacion*/}
+                {/* --- RUTAS PÚBLICAS --- */}
                 <Route path="/auth" element={<AuthLayout />}>
-                    <Route path="/auth/login" element={<LoginPage></LoginPage>}></Route>
-                    {/* <Route path='register' element = {<RegisterPage></RegisterPage>}></Route> */}
+                    <Route path="login" element={<LoginPage />} />
                 </Route>
-                {/* Area de la aplicacion (RUTAS PRIVADAS)*/}
-                <Route path="/" element={<MainLayout />}>
-                    {/*// TODO creacion de paginas y agregarlas al router de react */}
+
+                {/* --- RUTAS PRIVADAS (Con persistencia y seguridad) --- */}
+                <Route element={<PersistLogin />}>
+                    <Route path="/" element={<MainLayout />}></Route>
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,5 +1,6 @@
 import express from 'express';
-import { authLogin } from '../controllers/auth.controller.js';
+import { authLogin, handleLogout } from '../controllers/auth.controller.js';
+import handleRefreshToken from '../controllers/refreshToken.controller.js';
 
 const router = express.Router();
 
@@ -32,6 +33,9 @@ const router = express.Router();
  *        description: Credenciales incorrectas
  */
 
-router.post('/login-profesor', authLogin);
+router.post('/login', authLogin);
+
+router.get('/refresh', handleRefreshToken);
+router.get('/logout', handleLogout);
 
 export default router;
