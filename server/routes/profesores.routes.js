@@ -3,7 +3,6 @@ import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 
 import {
-    createProfesor,
     modifyProfesor,
     deleteProfesor,
     getProfesores,

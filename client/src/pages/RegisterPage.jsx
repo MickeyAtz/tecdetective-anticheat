@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// Importación de hooks y apis
 import useAuth from '@/hooks/useAuth';
 import axios from '@/api/axios.js';
 
+// Importación de componentes
 import Input from '@/components/atoms/Input.jsx';
 import Button from '@/components/atoms/Button.jsx';
 import Alerta from '@/components/atoms/Alerta.jsx';
@@ -30,21 +32,25 @@ const RegisterPage = () => {
         }));
     };
 
+    // Definición del handleSubmit (form)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
+        // Verificación de contraseñas
         if (dataForm.password !== dataForm.confirmPassword) {
             setError('Las contraseñas no coinciden.');
             return;
         }
 
         try {
+            // Registro del profesor mediante POST:api/auth/profesor
             const response = await axios.post('/auth/profesor', JSON.stringify(dataForm), {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
             });
 
+            // Si el resultado es 201 (creado correctamente), se logea mediante el endpoint de login
             if (response?.status === 201) {
                 const responseLogin = await axios.post(
                     '/auth/login',
@@ -55,7 +61,7 @@ const RegisterPage = () => {
                     }
                 );
 
-                const accessToken = response?.data?.accessTokens;
+                const accessToken = responseLogin?.data?.accessTokens;
 
                 setAuth({
                     email: responseLogin?.data?.email,
@@ -63,8 +69,7 @@ const RegisterPage = () => {
                     nombre: responseLogin?.data?.nombre,
                 });
 
-                console.log('Registro correcto.');
-
+                // Navegación al dashboard / pagina principal
                 navigate('/dashboard');
             }
         } catch (error) {

@@ -18,18 +18,15 @@ const Login = () => {
     const { setAuth } = useAuth();
     const navigate = useNavigate();
 
+    // Handle change de los
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setError('');
         setDataForm((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
-
-    // Quitar la alerta error al comenzar a teclear
-    useEffect(() => {
-        setError('');
-    }, [dataForm.email, dataForm.password]);
 
     // Handle submit
     const handleSubmit = async (e) => {
