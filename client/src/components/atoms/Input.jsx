@@ -13,8 +13,7 @@ const Input = ({
     ...props // Reesto de propiedades del input
 }) => {
     // Estilos para el texto de la etiqueta
-    const labelStyle =
-        'block text-sm font-semibold text-text-secondary mb-1.5 ml-0.5';
+    const labelStyle = 'block text-sm font-semibold text-text-secondary mb-1.5 ml-0.5';
 
     // Estilos para el campo de entrada
     const baseStyle = `
@@ -35,7 +34,17 @@ const Input = ({
                     {label}
                 </label>
             )}
-            <input id={name} name={name} className={baseStyle} {...props} />
+            <input
+                id={name}
+                name={name}
+                className={baseStyle}
+                type={type}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                autoComplete={autoComplete}
+                {...props}
+            />
         </div>
     );
 };
