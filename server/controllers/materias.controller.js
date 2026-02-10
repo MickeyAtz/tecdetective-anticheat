@@ -5,8 +5,6 @@ export const createMateria = async (req, res) => {
     const { nombre } = req.body;
     const { uid } = req.user;
 
-    console.log(req.user);
-    console.log(uid);
 
     try {
         const materiaExiste = await pool.query(

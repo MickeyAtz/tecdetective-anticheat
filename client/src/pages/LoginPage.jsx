@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '@/api/axios.js';
 import useAuth from '@/hooks/useAuth.js';
 
@@ -15,9 +15,11 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     // hooks
-    const { setAuth } = useAuth();
+    const { auth, setAuth } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
+    const from = location.state?.from?.pathname || '/';
     // Handle change de los
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,6 +29,14 @@ const Login = () => {
             [name]: value,
         }));
     };
+
+    // Redireccionamiento cuanto se inicia sesión
+    useEffect(() => {
+        console.log('Redireccionando...');
+        if (auth?.accessToken) {
+            navigate(from, { replace: true });
+        }
+    }, [auth, navigate, from]);
 
     // Handle submit
     const handleSubmit = async (e) => {
@@ -46,8 +56,7 @@ const Login = () => {
             // Alimentamos el contex de react (authContext)
             setAuth({ email: dataForm.email, accessToken, nombre: response?.data?.nombre });
 
-            // Nos movemos al dashboard (pagina principal)
-            navigate('/dashboard');
+            navigate(from, { replace: true });
         } catch (error) {
             if (!error?.response) {
                 setError('Servidor sin respuesta.');
