@@ -37,6 +37,7 @@ const router = express.Router();
 router.post('/login', authLogin);
 
 router.get('/refresh', handleRefreshToken);
+
 router.get('/logout', handleLogout);
 
 /**

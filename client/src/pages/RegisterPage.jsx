@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 // Importación de hooks y apis
 import useAuth from '@/hooks/useAuth';
 import axios from '@/api/axios.js';
@@ -20,8 +20,17 @@ const RegisterPage = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { setAuth } = useAuth();
+    const { auth, setAuth } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || '/';
+
+    useEffect(() => {
+        if (auth?.accessToken) {
+            navigate(from, { replace: true });
+        }
+    }, [auth, navigate, from]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -70,7 +79,7 @@ const RegisterPage = () => {
                 });
 
                 // Navegación al dashboard / pagina principal
-                navigate('/dashboard');
+                navigate(from, { replace: true });
             }
         } catch (error) {
             if (!error?.response) {

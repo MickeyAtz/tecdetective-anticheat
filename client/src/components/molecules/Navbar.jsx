@@ -7,7 +7,7 @@ const Navbar = () => {
     // TODO Agregar logica de navegacion, definir los elementos que llevara y agregarlos
     return (
         <nav className={navStyle}>
-            <span className={brandStyle}></span>
+            <span className={brandStyle}>TEC Detective</span>
             <div className="flex items-center gap-4">
                 <div className="w-8 h-8 rounded-full bg-bg-tertiary"></div>
             </div>

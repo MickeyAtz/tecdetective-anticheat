@@ -96,9 +96,11 @@ const Login = () => {
                     required
                     autoComplete="current-password"
                 ></Input>
-                <Button type="submit" size="lg" title="Inicio de sesión" disabled={isLoading}>
-                    {isLoading ? 'Ingresando...' : 'Ingresar'}
-                </Button>
+                <div className="flex justify-end">
+                    <Button type="submit" size="lg" title="Inicio de sesión" disabled={isLoading}>
+                        {isLoading ? 'Ingresando...' : 'Ingresar'}
+                    </Button>
+                </div>
             </form>
         </>
     );
