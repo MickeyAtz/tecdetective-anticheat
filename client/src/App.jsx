@@ -9,10 +9,6 @@ import DashboardPage from '@/pages/DashboardPage.jsx';
 import AuthLayout from '@/components/templates/AuthLayout.jsx';
 import MainLayout from '@/components/templates/MainLayout.jsx';
 
-// Importacion de la capa de seguridad
-import PersistLogin from '@/components/auth/PersistLogin.jsx';
-import RequireAuth from '@/components/auth/RequireAuth.jsx';
-
 function App() {
     return (
         <BrowserRouter>
@@ -24,13 +20,9 @@ function App() {
                 </Route>
 
                 {/* --- RUTAS PRIVADAS (Con persistencia y seguridad) --- */}
-                <Route element={<PersistLogin />}>
-                    <Route element={<RequireAuth />}>
-                        <Route path="/" element={<MainLayout />}>
-                            <Route index element={<DashboardPage />} />
-                            <Route path="dashboard" element={<DashboardPage />} />
-                        </Route>
-                    </Route>
+                <Route path="/" element={<MainLayout />}>
+                    <Route index element={<DashboardPage />} />
+                    <Route path="dashboard" element={<DashboardPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // Importación de hooks y apis
-import useAuth from '@/hooks/useAuth';
-import axios from '@/api/axios.js';
+import axiosInstance from '@/api/axiosInstance.js';
+import { useUser } from '@/context/UserContext.jsx';
 
 // Importación de componentes
 import Input from '@/components/atoms/Input.jsx';
@@ -20,17 +20,8 @@ const RegisterPage = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { auth, setAuth } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();
-
-    const from = location.state?.from?.pathname || '/';
-
-    useEffect(() => {
-        if (auth?.accessToken) {
-            navigate(from, { replace: true });
-        }
-    }, [auth, navigate, from]);
+    const { user, setUser } = useUser();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -54,32 +45,24 @@ const RegisterPage = () => {
 
         try {
             // Registro del profesor mediante POST:api/auth/profesor
-            const response = await axios.post('/auth/profesor', JSON.stringify(dataForm), {
-                headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,
-            });
+            const response = await axiosInstance.post('/auth/profesor', JSON.stringify(dataForm));
 
             // Si el resultado es 201 (creado correctamente), se logea mediante el endpoint de login
             if (response?.status === 201) {
-                const responseLogin = await axios.post(
+                const responseLogin = await axiosInstance.post(
                     '/auth/login',
-                    JSON.stringify({ email: dataForm.email, password: dataForm.password }),
-                    {
-                        headers: { 'Content-Type': 'application/json' },
-                        withCredentials: true,
-                    }
+                    JSON.stringify({ email: dataForm.email, password: dataForm.password })
                 );
 
-                const accessToken = responseLogin?.data?.accessTokens;
+                // Recuperación y asignación de usuario y token
+                const token = responseLogin?.data?.token;
+                const user = responseLogin?.data?.user;
 
-                setAuth({
-                    email: responseLogin?.data?.email,
-                    accessToken,
-                    nombre: responseLogin?.data?.nombre,
-                });
+                setUser(user);
+                localStorage.setItem('token', token);
 
                 // Navegación al dashboard / pagina principal
-                navigate(from, { replace: true });
+                navigate('/', { replace: true });
             }
         } catch (error) {
             if (!error?.response) {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from '@/api/axios.js';
-import useAuth from '@/hooks/useAuth.js';
-
+import axiosInstance from '@/api/axiosInstance.js';
+import { useUser } from '@/context/UserContext.jsx';
 // Importacion de componentes
 import Button from '@/components/atoms/Button.jsx';
 import Input from '@/components/atoms/Input.jsx';
@@ -15,11 +14,9 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     // hooks
-    const { auth, setAuth } = useAuth();
+    const { user, setUser } = useUser();
     const navigate = useNavigate();
-    const location = useLocation();
 
-    const from = location.state?.from?.pathname || '/';
     // Handle change de los
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,14 +27,6 @@ const Login = () => {
         }));
     };
 
-    // Redireccionamiento cuanto se inicia sesión
-    useEffect(() => {
-        console.log('Redireccionando...');
-        if (auth?.accessToken) {
-            navigate(from, { replace: true });
-        }
-    }, [auth, navigate, from]);
-
     // Handle submit
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,18 +34,18 @@ const Login = () => {
 
         try {
             // Solicitud al backend
-            const response = await axios.post('/auth/login', JSON.stringify(dataForm), {
-                headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,
-            });
+            const response = await axiosInstance.post('/auth/login', JSON.stringify(dataForm));
 
-            // Access token
-            const accessToken = response?.data?.accessToken;
+            // Recuperación del Access token
+            const token = response?.data?.token;
+            // Recuperación del usuario
+            const user = response?.data?.user;
 
-            // Alimentamos el contex de react (authContext)
-            setAuth({ email: dataForm.email, accessToken, nombre: response?.data?.nombre });
+            // Asignación del usuario en el hook useUser
+            setUser(user);
+            localStorage.setItem('token', token);
 
-            navigate(from, { replace: true });
+            navigate('/', { replace: true });
         } catch (error) {
             if (!error?.response) {
                 setError('Servidor sin respuesta.');

@@ -30,34 +30,19 @@ export const authLogin = async (req, res) => {
             return res.status(401).json({ message: 'Credenciales incorrectas.' });
         }
 
-        //Creacion del token de acceso (15 minutos)
-        const accessToken = jwt.sign({ email: cuenta.email }, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '15m',
-        });
-
-        //Creacion del token de refresh (1 dia)
-        const refreshToken = jwt.sign({ email: cuenta.email }, process.env.REFRESH_TOKEN_SECRET, {
-            expiresIn: '1d',
-        });
-
-        // Insercion del token a la base de datos (auth_token)
-        await pool.query('INSERT INTO auth_tokens(professor_id, refresh_token) VALUES($1, $2)', [
-            cuenta.id,
-            refreshToken,
-        ]);
-
-        // Configuracion de la cookie
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 24 * 60 * 60 * 1000,
-        });
+        //Creacion del token (1d)
+        const token = jwt.sign(
+            { email: cuenta.email, user: cuenta.user },
+            process.env.JWT_TOKEN_SECRET,
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN,
+            }
+        );
 
         // Retorno del token
         return res.status(200).json({
-            accessToken,
-            cuenta: {
+            token,
+            user: {
                 id: cuenta.id,
                 nombre: cuenta.nombre,
                 email: cuenta.email,
