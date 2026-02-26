@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Importación de páginas
@@ -13,9 +12,6 @@ import MainLayout from '@/components/templates/MainLayout.jsx';
 // Importacion de la capa de seguridad
 import PersistLogin from '@/components/auth/PersistLogin.jsx';
 import RequireAuth from '@/components/auth/RequireAuth.jsx';
-
-// Importacion de mocks (test cases)
-import { STUDENTS_MOCK } from '@/mocks/students';
 
 function App() {
     return (
