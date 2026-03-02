@@ -1,101 +1,195 @@
 :root {
-    --color-bg-primary: #ffffff; /* Fondo de la app */
-    --color-bg-secondary: #f9fafb; /* Cards, Sidebars */
-    --color-bg-tertiary: #f3f4f6; /* Inputs, Hovers */
-
-    /* --- TEXTO --- */
-    --color-text-primary: #111827; /* Títulos y cuerpo principal */
-    --color-text-secondary: #4b5563; /* Subtítulos, labels */
-    --color-text-tertiary: #9ca3af; /* Placeholders, texto desactivado */
-
-    /* --- MARCA / ACCIÓN --- */
-    --color-brand-primary: #3b82f6;
-    --color-brand-secondary: #1e40af;
-
-    /* --- ESTADOS --- */
-    --color-status-success: #5cb85c;
-    --color-status-danger: #d9534f;
-    --color-status-warning: #f0ad4e;
-
-    /* --- BORDE --- */
-    --color-border-primary: #e5e7eb;
-
-    /* --- TAMAÑOS DE FUENTE --- */
-    --text-xs: 0.75rem; /* 12px - Notas y captions */
-    --text-sm: 0.875rem; /* 14px - Texto secundario o interfaces densas */
-    --text-base: 1rem; /* 16px - El estándar para cuerpo de texto */
-    --text-lg: 1.125rem; /* 18px - Introducciones o subtítulos pequeños */
+    --color-bg-primary: #f1f5f9;
+    --color-bg-secondary: #ffffff;
+    --color-bg-tertiary: #e2e8f0;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-brand-primary: #2563eb;
+    --color-border-primary: #cbd5e1;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+html {
+    background-color: transparent;
 }
 
 body {
+    width: 320px;
+    padding: 20px;
     background-color: var(--color-bg-primary);
-    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 24px;
+    border-radius: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    color: var(--color-text-priamry);
-    font-size: var(--text-lg);
-}
-
-#form-section {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    width: 40%;
-    height: 40%;
-    align-items: center;
-    justify-content: center;
-}
-
-input {
-    background-color: var(--color-bg-tertiary);
-    border: 2px solid var(--color-border-secondary);
-    color: var(--color-text-primary);
-    padding: 0.5rem;
-    border-radius: 0.75rem;
-}
-
-button {
-    background-color: var(--color-brand-secondary);
-    border: 1px solid var(--color-boder-secondary);
-    border-radius: 0.75rem;
-    padding: 0.5rem 1.5rem;
-    color: white;
-    font-weight: bold;
-}
-
-button:hover {
-    background-color: var(--color-brand-primary);
-    transform: translateY(-2px) scale(1.05);
-    transition: all 0.2s ease-in-out;
-}
-
-input::placeholder {
-    color: var(--color-text-tertiary);
-}
-
-input:focus {
-    outline: 2px solid var(--color-brand-primary);
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--color-brand-primary);
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 p {
+    font-size: 0.85rem;
     color: var(--color-text-secondary);
-    font-size: var(--text-base);
+    line-height: 1.4;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .inputCombo {
+    margin-bottom: 16px;
     display: flex;
-    gap: 0.5rem;
-    align-items: start;
-    justify-content: center;
-    height: 80%;
-    width: 80%;
     flex-direction: column;
+}
+
+label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    margin-left: 4px;
+    color: var(--color-text-secondary);
+}
+
+input {
+    padding: 10px 14px;
+    border: 2px solid transparent;
+    border-radius: 12px; /* Redondez consistente */
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    outline: none;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+input:focus {
+    border-color: var(--color-brand-primary);
+    background-color: var(--color-bg-secondary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder {
+    color: #94a3b8;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-brand-primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.status-card {
+    background: var(--color-bg-tertiary);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid var(--color-brand-primary);
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: var(--color-brand-primary);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-brand-primary);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
+    70% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border-primary);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-primary) var(--color-bg-primary);
+}
+
+.card-status-espera {
+    border: 2px solid #f59e0b;
+    background-color: #fffbeb;
+}
+
+.card-status-examen {
+    border: 2px solid var(--color-brand-primary);
+    background-color: var(--color-bg-secondary);
+}
+
+.card-status-terminado {
+    border: 2px solid #10b981;
+    background-color: #f0fdf4;
+}
+
+.connection-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+.online {
+    background-color: #10b981;
+}
+.offline {
+    background-color: #ef4444;
 }
