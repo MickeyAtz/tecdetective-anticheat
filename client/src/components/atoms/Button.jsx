@@ -20,10 +20,8 @@ const Button = ({
     // Definicion de variantes
     // Completar las variantes del boton
     const variantStyles = {
-        primary:
-            'bg-brand-primary text-white hover:brightness-110 active:scale-95 shadow-sm',
-        secondary:
-            'bg-brand-secondary text-white hover:brightness-110 active:scale-95 shadow-sm',
+        primary: 'bg-brand-primary text-white hover:brightness-110 active:scale-95 shadow-sm',
+        secondary: 'bg-brand-secondary text-white hover:brightness-110 active:scale-95 shadow-sm',
         ghost: 'bg-transparent text-text-primary hover:bg-bg-tertiary',
     };
     // Definicion de tamaños

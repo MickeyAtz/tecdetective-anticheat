@@ -8,7 +8,7 @@ const Card = ({ title, subtitle, children, footer }) => {
     const styleSubtitle = 'text-sm text-text-secondary px-6 pb-2';
     const styleBody = 'px-6 py-4 text-text-secondary leading-relaxed';
     const styleFooter =
-        'px-6 py-4 bg-bg-tertiary/50 border-t border-border-primary flex items-center justify-end gap-3';
+        'px-6 py-4 border-t border-border-primary flex items-center justify-end gap-3';
 
     return (
         <div className={styleCard}>

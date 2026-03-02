@@ -1,0 +1,11 @@
+{
+    "name": "TEC Detective",
+    "version": "1.0.0",
+    "description": "Extension para detectar trampas en exámenes en línea (Proyecto Escolar)",
+    "manifest_version": 3,
+    "author": "Miguel Angel Alvarez",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "TEC Detective"
+    }
+}

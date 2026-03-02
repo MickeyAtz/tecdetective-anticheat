@@ -3,7 +3,7 @@ export const STUDENTS_MOCK = [
         id: 'st-001',
         nombre: 'Miguel Ángel Álvarez',
         status: 'success',
-        incidents: [], 
+        incidents: [],
     },
     {
         id: 'st-002',
@@ -13,8 +13,7 @@ export const STUDENTS_MOCK = [
             {
                 id: 'inc-1',
                 nombre: 'Cambio de pestaña',
-                descripcion:
-                    'Se detectó salida del navegador por más de 5 segundos.',
+                descripcion: 'Se detectó salida del navegador por más de 5 segundos.',
                 fechaYHora: '10:15 AM',
             },
         ],

@@ -7,6 +7,8 @@ import DashboardPage from '@/pages/DashboardPage.jsx';
 import ExamenPage from '@/pages/ExamenPage.jsx';
 import GruposPage from '@/pages/GruposPage';
 
+import MockPage from '@/pages/MockPage.jsx';
+
 // Importacion de layouts
 import AuthLayout from '@/components/templates/AuthLayout.jsx';
 import MainLayout from '@/components/templates/MainLayout.jsx';
@@ -26,6 +28,7 @@ function App() {
                     <Route path="dashboard" element={<DashboardPage />} />
                     <Route path="examenes" element={<ExamenPage />} />
                     <Route path="grupos" element={<GruposPage />} />
+                    <Route path="pruebas" element={<MockPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
