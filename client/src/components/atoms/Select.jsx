@@ -25,8 +25,7 @@ const Select = ({
         secondary: 'border-border-primary bg-bg-secondary',
     };
     // TODO Definicion de estilos del label
-    const labelStyle =
-        'block text-sm font-semibold text-text-secondary mb-1.5 ml-0.5';
+    const labelStyle = 'block text-sm font-semibold text-text-secondary mb-1.5 ml-0.5';
 
     return (
         <div className="w-full mb-4">
@@ -42,23 +41,22 @@ const Select = ({
                 onChange={(e) => onChange(e.target.value)}
             >
                 {placeholder && (
-                    <option value="" disabled>
+                    <option value="" disabled className="bg-bg-secondary text-text-tertiary">
                         {placeholder}
                     </option>
                 )}
                 {options.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option
+                        key={option.value}
+                        value={option.value}
+                        className="bg-bg-secondary text-text-primary py-2"
+                    >
                         {option.label}
                     </option>
                 ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-text-tertiary">
-                <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"

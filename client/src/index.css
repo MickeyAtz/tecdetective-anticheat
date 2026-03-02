@@ -6,18 +6,18 @@ body {
 
 @theme {
     /* --- SUPERFICIES (FONDOS) --- */
-    --color-bg-primary: #ffffff; /* Fondo de la app */
-    --color-bg-secondary: #f9fafb; /* Cards, Sidebars */
-    --color-bg-tertiary: #f3f4f6; /* Inputs, Hovers */
+    --color-bg-primary: #f1f5f9; /* Fondo de la app */
+    --color-bg-secondary: #ffffff; /* Cards, Sidebars */
+    --color-bg-tertiary: #e2e8f0; /* Inputs, Hovers */
 
     /* --- TEXTO --- */
-    --color-text-primary: #111827; /* Títulos y cuerpo principal */
-    --color-text-secondary: #4b5563; /* Subtítulos, labels */
-    --color-text-tertiary: #9ca3af; /* Placeholders, texto desactivado */
+    --color-text-primary: #0f172a; /* Títulos y cuerpo principal */
+    --color-text-secondary: #475569; /* Subtítulos, labels */
+    --color-text-tertiary: #64748b; /* Placeholders, texto desactivado */
 
     /* --- MARCA / ACCIÓN --- */
-    --color-brand-primary: #3b82f6;
-    --color-brand-secondary: #1e40af;
+    --color-brand-primary: #2563eb;
+    --color-brand-secondary: #1d4ed8;
 
     /* --- ESTADOS --- */
     --color-status-success: #5cb85c;
@@ -25,7 +25,7 @@ body {
     --color-status-warning: #f0ad4e;
 
     /* --- BORDE --- */
-    --color-border-primary: #e5e7eb;
+    --color-border-primary: #cbd5e1;
 
     /* --- TAMAÑOS DE FUENTE --- */
     --text-xs: 0.75rem; /* 12px - Notas y captions */
@@ -47,7 +47,31 @@ body {
     --color-brand-primary: #60a5fa;
     --color-brand-secondary: #3b82f6;
 
-    --color-border-primary: #334155;
+    --color-border-primary: #475569;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border-primary);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-primary) var(--color-bg-primary);
 }
 
 @layer base {
