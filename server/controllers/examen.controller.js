@@ -34,3 +34,52 @@ export const validarExamen = async (req, res) => {
         return res.status(500).json({ message: 'Error en el servidor.' });
     }
 };
+
+export const createExamen = async (req, res) => {
+    const { uid } = req.user;
+    const { grupo_id, titulo, codigo_acceso, estado, duracion_minutos, materia_id, programed_at } =
+        req.body;
+
+    try {
+        const nuevoExamen = await pool.query(
+            `
+                INSERT INTO examenes
+                (grupo_id, titulo, codigo_acceso, estado, duracion_minutos, materia_id, programed_at, profesor_id)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            `,
+            [
+                grupo_id,
+                titulo,
+                codigo_acceso,
+                estado,
+                duracion_minutos,
+                materia_id,
+                programed_at,
+                uid,
+            ]
+        );
+
+        return res
+            .status(201)
+            .json({ examen: nuevoExamen.rows[0], message: 'Examen creado con exito.' });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error en el servidor.' });
+    }
+};
+
+export const obtenerExamenes = async (req, res) => {
+    const { uid } = req.user;
+
+    try {
+        const result = await pool.query(
+            'SELECT * FROM examenes WHERE profesor_id = $1 ORDER BY fecha_programada ASC AND deleted_at IS NULL',
+            [uid]
+        );
+
+        return res.json(result.rows);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error en el servidor.' });
+    }
+};

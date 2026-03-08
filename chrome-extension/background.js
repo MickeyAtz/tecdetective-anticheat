@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (request.action === 'reportar_incidente') {
         if (socket && socket.connected) {
-            socket.emit('notficar_incidente', {
+            socket.emit('notificar_incidente', {
                 ...request.datos,
                 nControl: datosAlumno.nControl,
                 claveExamen: datosAlumno.claveExamen,
