@@ -17,7 +17,7 @@
     "host_permissions": ["http://localhost:3000/*"],
     "content_scripts": [
         {
-            "matches": ["https://docs.google.com/forms/*", "http://localhost/*"],
+            "matches": ["https://docs.google.com/forms/*"],
             "js": ["content_script.js"]
         }
     ]

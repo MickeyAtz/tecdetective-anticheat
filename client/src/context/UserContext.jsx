@@ -8,6 +8,10 @@ export const UserProvider = ({ children }) => {
         return storedUser ? JSON.parse(storedUser) : null;
     });
 
+    const [token, setToken] = useState(() => {
+        return localStorage.getItem('token');
+    });
+
     useEffect(() => {
         if (user) {
             localStorage.setItem('user', JSON.stringify(user));
@@ -16,7 +20,19 @@ export const UserProvider = ({ children }) => {
         }
     }, [user]);
 
-    return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem('token', token);
+        } else {
+            localStorage.removeItem('token');
+        }
+    }, [token]);
+
+    return (
+        <UserContext.Provider value={{ user, setUser, token, setToken }}>
+            {children}
+        </UserContext.Provider>
+    );
 };
 
 export const useUser = () => useContext(UserContext);

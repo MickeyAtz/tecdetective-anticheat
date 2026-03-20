@@ -2,15 +2,13 @@ import pool from '../db.js';
 
 // Creacion del grupo
 export const createGrupo = async (req, res) => {
-    const { uid } = req.user;
+    const { id } = req.user;
     const { nombre, ciclo_escolar } = req.body;
-
-    console.log(req.body);
 
     try {
         const existGrupo = await pool.query(
             'SELECT * FROM grupos WHERE nombre = $1 AND profesor_id = $2 AND deleted_at IS NULL',
-            [nombre, uid]
+            [nombre, id]
         );
 
         if (existGrupo.rows.length > 0)
@@ -18,7 +16,7 @@ export const createGrupo = async (req, res) => {
 
         await pool.query(
             'INSERT INTO grupos(profesor_id, nombre, ciclo_escolar) VALUES($1, $2, $3)',
-            [uid, nombre, ciclo_escolar]
+            [id, nombre, ciclo_escolar]
         );
 
         return res.status(201).json({ message: 'Grupo creado exitosamente.' });
@@ -30,14 +28,14 @@ export const createGrupo = async (req, res) => {
 
 // Editar grupo
 export const modifyGrupo = async (req, res) => {
-    const { uid } = req.user;
+    const { id } = req.user;
     const { nombre, ciclo_escolar } = req.body;
-    const { id } = req.params;
+    const idGrupo = req.params.id;
 
     try {
         const existGrupo = await pool.query(
             'SELECT * FROM grupos WHERE nombre = $1 AND profesor_id = $2 AND deleted_at IS NULL',
-            [nombre, uid]
+            [nombre, id]
         );
 
         if (existGrupo.rows.length > 0)
@@ -46,7 +44,7 @@ export const modifyGrupo = async (req, res) => {
         await pool.query('UPDATE grupos SET nombre = $1, ciclo_escolar = $2 WHERE id = $3', [
             nombre,
             ciclo_escolar,
-            id,
+            idGrupo,
         ]);
 
         return res.status(200).json({ message: 'Grupo actualizado exitosamente.' });
@@ -59,8 +57,9 @@ export const modifyGrupo = async (req, res) => {
 // Eliminar grupo - soft delete
 export const deleteGrupo = async (req, res) => {
     const { id } = req.params;
+    console.log(id);
     try {
-        await pool.query('UPDATE grupo SET deleted_at = NOW() WHERE id = $1', [id]);
+        await pool.query('UPDATE grupos SET deleted_at = NOW() WHERE id = $1', [id]);
 
         return res.status(200).json({ message: 'Grupo eliminado correctamente.' });
     } catch (error) {
@@ -71,11 +70,11 @@ export const deleteGrupo = async (req, res) => {
 
 // Obtener todos los grupos del profesor
 export const getAllGruposByProfesor = async (req, res) => {
-    const { uid } = req.user;
+    const { id } = req.user;
     try {
         const grupos = await pool.query(
             'SELECT * FROM grupos WHERE profesor_id = $1 AND deleted_at IS NULL',
-            [uid]
+            [id]
         );
 
         return res.status(200).json({ grupos: grupos.rows });

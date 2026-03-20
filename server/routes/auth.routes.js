@@ -1,7 +1,6 @@
 import express from 'express';
-import { authLogin, handleLogout } from '../controllers/auth.controller.js';
+import { authLogin } from '../controllers/auth.controller.js';
 import { createProfesor } from '../controllers/profesores.controller.js';
-import handleRefreshToken from '../controllers/refreshToken.controller.js';
 
 const router = express.Router();
 
@@ -36,9 +35,6 @@ const router = express.Router();
 
 router.post('/login', authLogin);
 
-router.get('/refresh', handleRefreshToken);
-
-router.get('/logout', handleLogout);
 
 /**
  * @openapi

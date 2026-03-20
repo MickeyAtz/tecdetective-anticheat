@@ -1,96 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { getGrupos, createGrupo, deleteGrupo, editGrupo } from '@/api/grupos.api.js';
 
+import { getMaterias, createMateria, modifyMateria, deleteMateria } from '@/api/materias.api.js';
+
+import Table from '@/components/organism/Table.jsx';
 import Card from '@/components/molecules/Card.jsx';
 import Button from '@/components/atoms/Button.jsx';
-import Table from '@/components/organism/Table.jsx';
 import Modal from '@/components/atoms/Modal.jsx';
 import Form from '@/components/molecules/Form.jsx';
 import Alerta from '@/components/atoms/Alerta.jsx';
-import SubjectManager from '@/components/molecules/SubjectManager.jsx';
-import { HiTrash, HiOutlinePencil, HiOutlineBookOpen } from 'react-icons/hi';
+
+import { HiTrash, HiOutlinePencil } from 'react-icons/hi';
 
 const columns = [
     { field: 'nombre', label: 'Nombre' },
-    { field: 'ciclo_escolar', label: 'Ciclo escolar' },
     { field: 'creado_at', label: 'Fecha de creación' },
 ];
 
 const formFields = [
     {
         name: 'nombre',
-        label: 'Nombre del Grupo',
+        label: 'Nombre de la Materia',
         type: 'text',
-        placeholder: 'Ej. Base de Datos',
-    },
-    {
-        name: 'ciclo_escolar',
-        label: 'Ciclo escolar',
-        type: 'text',
-        placeholder: 'Ej. 2026A',
+        placeholder: 'Ej. Taller de Programación II',
     },
 ];
 
-const GruposPage = () => {
-    const [grupos, setGrupos] = useState([]);
+// TODO: VERIFICAR LOS CONTROLADRES, API Y TODO DE MATERIAS!!!
+// TODO: Terminar el CRUD!
+
+const MateriasPage = () => {
+    const [materias, setMaterias] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
-    const [modalSubjects, setModalSubjects] = useState(false);
 
     const [editData, setEditData] = useState(null);
-    const [grupoMaterias, setGrupoMaterias] = useState(null);
     const [deleteData, setDeleteData] = useState(null);
 
     useEffect(() => {
-        fetchGrupos();
+        fetchMaterias();
     }, []);
 
-    const fetchGrupos = async () => {
+    const fetchMaterias = async () => {
         try {
-            const { grupos } = await getGrupos();
-            const grupoFechaFormateada = grupos.map((grupo) => ({
-                ...grupo,
-                creado_at: new Date(grupo.creado_at).toLocaleDateString('es-MX'),
+            const { materias } = await getMaterias();
+            const formatedMateria = materias.map((materia) => ({
+                ...materia,
+                creado_at: new Date(materia.creado_at).toLocaleDateString('es-MX'),
             }));
-            setGrupos(grupoFechaFormateada);
+            setMaterias(formatedMateria);
         } catch (err) {
-            console.error('Error al obtener grupos: ', err);
-            setGrupos([]);
+            setMaterias([]);
         }
     };
 
+    //
     const handleSubmit = async (formData) => {
         try {
             if (editData) {
-                console.log(formData, editData);
-                await editGrupo(formData, editData.id);
+                // modifyMateria(data, id);
+                await modifyMateria(formData, editData.id);
             } else {
-                await createGrupo(formData);
+                console.log(formData);
+                await createMateria(formData);
             }
-            setIsModalOpen(false);
-            setEditData(null);
-            fetchGrupos();
+            fetchMaterias();
         } catch (err) {
             console.error(err);
+        } finally {
+            setEditData(null);
+            setIsModalOpen(false);
+            console.log('123');
         }
     };
 
-    const handleEdit = (grupo) => {
-        setModalTitle('Editar Grupo');
-        setEditData(grupo);
+    const handleEdit = (materia) => {
+        setModalTitle('Editar Materia');
+        setEditData(materia);
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (id) => {
-        setDeleteData(id);
+    const handleDelete = (materia) => {
+        setDeleteData(materia);
     };
 
     const handleConfirmDelete = async () => {
         if (!deleteData) return;
         try {
-            await deleteGrupo(deleteData);
-            fetchGrupos();
+            await deleteMateria(deleteData.id);
+            fetchMaterias();
         } catch (err) {
             console.error(err);
         } finally {
@@ -101,57 +99,43 @@ const GruposPage = () => {
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between w-full mb-2">
-                <h2>Gestión de Grupos</h2>
+                <h2>Gestión de Materias</h2>
                 <Button
                     onClick={() => {
-                        (setIsModalOpen(true), setModalTitle('Nuevo Grupo'));
+                        setIsModalOpen(true);
+                        setModalTitle('Nueva Materia');
                     }}
-                    variant="primary"
                 >
-                    Agregar Grupo
+                    Agregar Materia
                 </Button>
             </div>
-
-            <Card title="Grupos registrados">
+            <Card title="Materias Registradas">
                 <Table
                     columns={columns}
-                    data={grupos}
-                    renderActions={(grupo) => (
+                    data={materias}
+                    renderActions={(materia) => (
                         <>
                             <Button
-                                title="Gestionar Materias del Grupo"
-                                onClick={() => {
-                                    setGrupoMaterias(grupo);
-                                    setModalSubjects(true);
-                                    setModalTitle(`Gestión de Materias - ${grupo.nombre}`);
-                                }}
-                                variant="secondary"
-                                icon={HiOutlineBookOpen}
-                            ></Button>
-                            <Button
                                 title="editar"
-                                onClick={() => handleEdit(grupo)}
-                                variant="primary"
+                                onClick={() => handleEdit(materia)}
                                 icon={HiOutlinePencil}
-                            ></Button>
+                            />
                             <Button
                                 title="eliminar"
-                                onClick={() => {
-                                    handleDelete(grupo.id);
-                                }}
                                 variant="danger"
+                                onClick={() => handleDelete(materia)}
                                 icon={HiTrash}
-                            ></Button>
+                            />
                         </>
                     )}
                 ></Table>
             </Card>
-
             <Modal
                 title={modalTitle}
                 isOpen={isModalOpen}
                 onClose={() => {
                     setIsModalOpen(false);
+                    setModalTitle('');
                     setEditData(null);
                 }}
             >
@@ -162,8 +146,9 @@ const GruposPage = () => {
                     onCancel={() => {
                         setIsModalOpen(false);
                         setEditData(null);
+                        setModalTitle('');
                     }}
-                ></Form>
+                />
             </Modal>
 
             <Modal
@@ -194,22 +179,8 @@ const GruposPage = () => {
                     </div>
                 </div>
             </Modal>
-
-            <Modal
-                title={modalTitle}
-                isOpen={modalSubjects}
-                onClose={() => {
-                    setModalSubjects(false);
-                    setGrupoMaterias(null);
-                }}
-                size="xl"
-            >
-                {grupoMaterias && (
-                    <SubjectManager grupoId={grupoMaterias.id} nombreGrupo={grupoMaterias.nombre} />
-                )}
-            </Modal>
         </div>
     );
 };
 
-export default GruposPage;
+export default MateriasPage;

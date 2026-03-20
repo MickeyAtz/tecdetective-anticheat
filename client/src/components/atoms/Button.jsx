@@ -10,9 +10,8 @@ const Button = ({
     title = '',
 }) => {
     //Definicion y creacion del componente IconComponent si se manda icon
-    const IconComponent = icon ? iconMap[icon] : null;
     const hasOnlyIcon = icon && !children;
-
+    const IconComponent = icon;
     // Definicion del estilo base del boton
     // Completar estilos de Boton
     const baseStyles =
@@ -23,6 +22,7 @@ const Button = ({
         primary: 'bg-brand-primary text-white hover:brightness-110 active:scale-95 shadow-sm',
         secondary: 'bg-brand-secondary text-white hover:brightness-110 active:scale-95 shadow-sm',
         ghost: 'bg-transparent text-text-primary hover:bg-bg-tertiary',
+        danger: 'bg-red-600 text-white hover:bg-red-700 active:scale-95 shadow-sm',
     };
     // Definicion de tamaños
     //  Completar los tamaños del botón
@@ -36,7 +36,7 @@ const Button = ({
 
     return (
         <button
-            className={`${baseStyles} ${variantStyles[variant]} ${variantSizes[size]} ${hasOnlyIcon ? iconStyle : ''}`}
+            className={`${baseStyles} ${variantStyles[variant]} ${variantSizes[size]} ${IconComponent ? iconStyle : ''}`}
             onClick={onClick}
             title={title || (hasOnlyIcon ? children : '')}
             disabled={disabled && 'disabled'}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
     const [show, setShow] = useState(false);
 
     // Manejo de la visibilidad del modal
@@ -16,6 +16,14 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     // Si no esta el show, no se muestra el modal, se retorna solo null
     if (!show) return null;
 
+    // Tamaños del modal
+    const modalSize = {
+        sm: 'max-w-sm',
+        md: 'max-w-md',
+        lg: 'max-w-3xl',
+        xl: 'max-w-5xl',
+    };
+
     // Definicion de estilos
     const overlayStyles = `
         fixed inset-0 z-50 flex items-center justify-center p-4 
@@ -24,7 +32,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     `;
 
     const baseStyles = `
-        relative w-full max-w-md p-6 rounded-xl shadow-xl 
+        relative w-full ${size ? modalSize[size] : 'md'} p-6 rounded-xl shadow-xl 
         bg-bg-primary border border-border-primary
         transform transition-all duration-300
         ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}
@@ -38,15 +46,8 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
     return (
         <div className={`${overlayStyles}`} onClick={onClose}>
-            <div
-                className={`${baseStyles}`}
-                onClick={(e) => e.stopPropagation()}
-            >
-                {title && (
-                    <h2 className="text-xl font-bold text-text-primary mb-4">
-                        {title}
-                    </h2>
-                )}
+            <div className={`${baseStyles}`} onClick={(e) => e.stopPropagation()}>
+                {title && <h2 className="text-xl font-bold text-text-primary mb-4">{title}</h2>}
                 {children}
                 <button className={`${closeBtnStyle}`} onClick={onClose}>
                     X

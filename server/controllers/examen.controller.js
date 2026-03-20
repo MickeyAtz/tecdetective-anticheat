@@ -1,12 +1,12 @@
 import pool from '../db.js';
 
-//TODO: Creacion de controladores para el examen
 export const validarExamen = async (req, res) => {
     const { nControl, nombre, claveExamen } = req.body;
+    console.log(req.body);
 
     try {
         const response = await pool.query(
-            "SELECT * FROM examenes WHERE clave = $1 AND estado = 'activo'",
+            "SELECT * FROM examenes WHERE codigo_acceso = $1 AND estado = 'activo'",
             [claveExamen]
         );
 
@@ -20,7 +20,7 @@ export const validarExamen = async (req, res) => {
         } else
             return res
                 .status(401)
-                .json({ message: 'No existe el examen o esta inactivo.', ok: false });
+                .json({ messa: 'No existe el examen o esta inactivo.', ok: false });
     } catch (error) {
         console.error(error);
 
@@ -83,3 +83,4 @@ export const obtenerExamenes = async (req, res) => {
         return res.status(500).json({ message: 'Error en el servidor.' });
     }
 };
+

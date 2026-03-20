@@ -8,14 +8,16 @@ const STYLES = {
         'w-full bg-bg-secondary p-4 rounded-lg border border-border-primary shadow-sm transition-colors duration-300',
     searchContainer: 'mb-4 w-full max-w-md',
     tableContainer: 'overflow-x-auto rounded-t-lg border border-border-primary',
-    table: 'w-full text-sm text-left border-collapse',
+    table: 'w-full text-sm border-collapse', // Se elimina text-left para control individual
     thead: 'bg-bg-tertiary text-text-primary border-b border-border-primary',
+    // Centrado de encabezados
     headerCell:
-        'px-6 py-4 font-bold uppercase tracking-wider cursor-pointer select-none hover:opacity-80 transition-opacity',
+        'px-6 py-4 font-bold uppercase tracking-wider cursor-pointer select-none hover:opacity-80 transition-opacity text-center',
     tbody: 'divide-y divide-border-primary bg-bg-secondary',
     row: 'hover:bg-bg-tertiary transition-colors duration-200',
-    cell: 'px-6 py-4 whitespace-nowrap text-text-secondary font-medium',
-    actionsCell: 'px-6 py-4',
+    // Centrado de celdas de datos
+    cell: 'px-6 py-4 whitespace-nowrap text-text-secondary font-medium text-center',
+    actionsCell: 'px-6 py-4 text-center',
     actionsWrapper: 'flex gap-2 justify-center items-center',
     pagination:
         'flex flex-col sm:flex-row justify-between items-center gap-4 mt-6 pt-4 border-t border-border-primary',
@@ -35,8 +37,11 @@ export default function Table({
 
     // Filtrar datos según searchTerm
     const filteredData = useMemo(() => {
-        if (!searchTerm) return data;
-        return data.filter((row) =>
+        const safeData = Array.isArray(data) ? data : [];
+
+        if (!searchTerm) return safeData;
+
+        return safeData.filter((row) =>
             Object.values(row).some((value) =>
                 String(value).toLowerCase().includes(searchTerm.toLowerCase())
             )
@@ -46,6 +51,7 @@ export default function Table({
     // Ordenar datos según sortConfig
     const sortedData = useMemo(() => {
         if (!sortConfig.key) return filteredData;
+
         return [...filteredData].sort((a, b) => {
             const aValue = a[sortConfig.key];
             const bValue = b[sortConfig.key];
@@ -91,8 +97,12 @@ export default function Table({
                     <thead className={STYLES.thead}>
                         <tr>
                             {columns.map((col) => (
-                                <th key={col.field} onClick={() => handleSort(col.field)}>
-                                    <div className="flex items-center gap-2">
+                                <th
+                                    key={col.field}
+                                    className={STYLES.headerCell}
+                                    onClick={() => handleSort(col.field)}
+                                >
+                                    <div className="flex items-center justify-center gap-2">
                                         {col.label}
                                         {sortConfig.key === col.field && (
                                             <span className="text-brand-primary">
@@ -106,7 +116,7 @@ export default function Table({
                         </tr>
                     </thead>
 
-                    <tbody className={STYLES.body}>
+                    <tbody className={STYLES.tbody}>
                         {paginatedData.map((row, index) => (
                             <tr key={row.id} className={STYLES.row}>
                                 {columns.map((col) => (
@@ -135,7 +145,7 @@ export default function Table({
                 <div className="flex gap-2">
                     <Button
                         variant="secondary"
-                        size="small"
+                        size="sm"
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage((prev) => prev - 1)}
                     >
@@ -143,7 +153,7 @@ export default function Table({
                     </Button>
                     <Button
                         variant="secondary"
-                        size="small"
+                        size="sm"
                         disabled={currentPage === totalPages || totalPages === 0}
                         onClick={() => setCurrentPage((prev) => prev + 1)}
                     >

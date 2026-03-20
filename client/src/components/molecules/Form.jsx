@@ -39,13 +39,12 @@ const Form = ({ fields, initialData = {}, onSubmit, onCancel }) => {
                     if (field.type === 'select') {
                         return (
                             <Select
+                                key={field.name}
                                 options={field.options}
                                 label={field.label}
                                 name={field.name}
                                 value={value}
-                                onChange={(value) =>
-                                    handleChange(field.name, value)
-                                }
+                                onChange={(value) => handleChange(field.name, value)}
                                 placeholder={field.placeholder}
                             ></Select>
                         );
@@ -53,13 +52,12 @@ const Form = ({ fields, initialData = {}, onSubmit, onCancel }) => {
 
                     return (
                         <Input
+                            key={field.name}
                             type={field.type}
                             name={field.name}
                             label={field.label}
                             value={value}
-                            onChange={(e) =>
-                                handleChange(field.name, e.target.value)
-                            }
+                            onChange={(e) => handleChange(field.name, e.target.value)}
                             placeholder={field.placeholder}
                             {...field}
                         ></Input>
@@ -68,11 +66,7 @@ const Form = ({ fields, initialData = {}, onSubmit, onCancel }) => {
             </div>
             <div className={styleActions}>
                 <>
-                    <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={onCancel}
-                    >
+                    <Button type="button" variant="secondary" onClick={onCancel}>
                         Cancelar
                     </Button>
                     <Button type="submit" variant="primary">

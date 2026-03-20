@@ -1,6 +1,8 @@
 import React from 'react';
 import NavItem from '@/components/atoms/NavItem.jsx';
+import NavDropDown from '@/components/atoms/NavDropDown.jsx';
 import Button from '@/components/atoms/Button.jsx';
+import { useUser } from '@/context/UserContext.jsx';
 
 import { navBarItems } from '@/config/navBarItems.js';
 
@@ -11,6 +13,12 @@ const Navbar = ({ isDarkMode, toggleDarkMode }) => {
         'rounded-lg border border-border-primary bg-bg-primary px-3 py-1.5 text-sm font-medium text-text-primary transition-all hover:border-brand-primary/50 hover:text-brand-primary shadow-sm';
     const navLinkStyle = 'flex items-center gap-1.5 list-none m-0 p-0';
 
+    const { setUser, setToken } = useUser();
+    const handleLogOut = () => {
+        setToken(null);
+        setUser(null);
+    };
+
     // TODO Agregar logica de navegacion, definir los elementos que llevara y agregarlos
     return (
         <nav className={navStyle}>
@@ -19,6 +27,15 @@ const Navbar = ({ isDarkMode, toggleDarkMode }) => {
             <div className="flex items-center gap-4">
                 <ul className={navLinkStyle}>
                     {navBarItems.map((item) => {
+                        if (item.isDropdown) {
+                            return (
+                                <NavDropDown
+                                    key={item.id}
+                                    label={item.label}
+                                    items={item.subItems}
+                                />
+                            );
+                        }
                         return (
                             <NavItem key={item.id} path={item.path}>
                                 {item.label}
@@ -36,7 +53,7 @@ const Navbar = ({ isDarkMode, toggleDarkMode }) => {
                 >
                     {isDarkMode ? '☀️' : '🌙'}
                 </button>
-                <Button variant="secondary" title="Cierre se sesión">
+                <Button variant="secondary" title="Cierre se sesión" onClick={handleLogOut}>
                     Cerrar Sesión
                 </Button>
             </div>

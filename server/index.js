@@ -12,6 +12,7 @@ import profesorRouter from './routes/profesores.routes.js';
 import materiaRouter from './routes/materias.routes.js';
 import grupoRouter from './routes/grupos.routes.js';
 import examenRouter from './routes/examen.routes.js';
+import grupoMateriasRouter from './routes/grupo_materias.routes.js';
 
 // Importacion de configuracion
 import corsOptions from './config/corsOptions.js';
@@ -46,6 +47,7 @@ app.use('/api/profesor', profesorRouter);
 app.use('/api/materia', materiaRouter);
 app.use('/api/grupo', grupoRouter);
 app.use('/api/examen', examenRouter);
+app.use('/api/grupo_materias', grupoMateriasRouter);
 
 socketHandler(io);
 

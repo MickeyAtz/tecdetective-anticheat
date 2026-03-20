@@ -14,7 +14,7 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     // hooks
-    const { user, setUser } = useUser();
+    const { setUser, setToken } = useUser();
     const navigate = useNavigate();
 
     // Handle change de los
@@ -43,7 +43,7 @@ const Login = () => {
 
             // Asignación del usuario en el hook useUser
             setUser(user);
-            localStorage.setItem('token', token);
+            setToken(token);
 
             navigate('/', { replace: true });
         } catch (error) {
@@ -72,7 +72,6 @@ const Login = () => {
                     placeholder="Ingresa tu correo electrónico"
                     value={dataForm.email}
                     onChange={handleChange}
-                    autoComplete="correo-electronico"
                     required
                 ></Input>
                 <Input
@@ -83,7 +82,6 @@ const Login = () => {
                     value={dataForm.password}
                     onChange={handleChange}
                     required
-                    autoComplete="current-password"
                 ></Input>
                 <div className="flex justify-end">
                     <Button type="submit" size="lg" title="Inicio de sesión" disabled={isLoading}>

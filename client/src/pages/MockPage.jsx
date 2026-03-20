@@ -6,13 +6,44 @@ import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Card from '@/components/molecules/Card';
 import StudentListItem from '@/components/molecules/StudentListItem';
-
+import Table from '@/components/organism/Table.jsx';
 import { STUDENTS_MOCK } from '@/mocks/students';
 import StudentList from '@/components/molecules/StudentList';
 
 const DesignSystemPage = () => {
     const [inputValue, setInputValue] = useState('');
     const [selectValue, setSelectValue] = useState('');
+
+    const examColumns = [
+        { field: 'titulo', label: 'Examen' },
+        { field: 'codigo_acceso', label: 'Código' },
+        { field: 'programed_at', label: 'Inicio' },
+        { field: 'estado', label: 'Estado' },
+    ];
+
+    const examData = [
+        {
+            id: 1,
+            titulo: 'Parcial Redes',
+            codigo_acceso: 'RED-101',
+            programed_at: '2026-03-15',
+            estado: 'programado',
+        },
+        {
+            id: 2,
+            titulo: 'Final Base de Datos',
+            codigo_acceso: 'BD-202',
+            programed_at: '2026-03-20',
+            estado: 'en_curso',
+        },
+        {
+            id: 3,
+            titulo: 'Sistemas Operativos',
+            codigo_acceso: 'SO-303',
+            programed_at: '2026-03-25',
+            estado: 'finalizado',
+        },
+    ];
 
     // Datos de prueba para simular un estudiante con incidentes
     const mockStudent = {
@@ -24,7 +55,7 @@ const DesignSystemPage = () => {
                 id: 'inc-1',
                 nombre: 'Cambio de pestaña',
                 descripcion: 'Se detectó salida del navegador por más de 5 segundos.',
-                fechaYHora: '10:15 AM',
+                fechaYHora: '10:15 AM', 
             },
         ],
     };
@@ -151,6 +182,58 @@ const DesignSystemPage = () => {
                         </p>
                     </Card>
                 </div>
+            </section>
+            {/* --- SECCIÓN DE ORGANISMOS --- */}
+            <section className="space-y-6">
+                <h2 className="text-xl font-bold text-brand-primary border-b border-border-primary pb-2">
+                    Organismos
+                </h2>
+
+                <Card
+                    title="Tabla de Gestión de Exámenes"
+                    subtitle="Componente con búsqueda, ordenamiento y paginación"
+                >
+                    <Table
+                        columns={examColumns}
+                        data={examData}
+                        renderCell={(row, field) => {
+                            if (field === 'estado') {
+                                const variants = {
+                                    programado: 'warning',
+                                    en_curso: 'success',
+                                    finalizado: 'info',
+                                };
+                                return <Badge variant={variants[row.estado]}>{row.estado}</Badge>;
+                            }
+                            if (field === 'codigo_acceso') {
+                                return (
+                                    <span className="font-mono font-bold text-brand-primary">
+                                        {row[field]}
+                                    </span>
+                                );
+                            }
+                            return row[field];
+                        }}
+                        renderActions={(row) => (
+                            <>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => console.log('Editar', row.id)}
+                                >
+                                    Editar
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => console.log('Eliminar', row.id)}
+                                >
+                                    Borrar
+                                </Button>
+                            </>
+                        )}
+                    />
+                </Card>
             </section>
         </div>
     );
