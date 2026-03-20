@@ -57,7 +57,6 @@ export const modifyGrupo = async (req, res) => {
 // Eliminar grupo - soft delete
 export const deleteGrupo = async (req, res) => {
     const { id } = req.params;
-    console.log(id);
     try {
         await pool.query('UPDATE grupos SET deleted_at = NOW() WHERE id = $1', [id]);
 

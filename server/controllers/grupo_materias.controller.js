@@ -17,6 +17,7 @@ export const asignarMateria = async (req, res) => {
 
 export const quitarAsignacionMateria = async (req, res) => {
     const { idMateria, idGrupo } = req.params;
+    console.log('req.params de quitar asignaciones', req.params);
 
     try {
         await pool.query('DELETE FROM materia_grupo WHERE grupo_id = $1 AND materia_id = $2', [
@@ -33,12 +34,15 @@ export const quitarAsignacionMateria = async (req, res) => {
 
 export const getMateriasAsignadas = async (req, res) => {
     const { idGrupo } = req.params;
-    console.log(idGrupo);
 
     try {
         const result = await pool.query(
             `
-            SELECT * FROM materias m
+            SELECT 
+                m.id,
+                m.nombre,
+                m.profesor_id
+            FROM materias m
             INNER JOIN materia_grupo mg
             ON mg.materia_id = m.id
             WHERE mg.grupo_id = $1

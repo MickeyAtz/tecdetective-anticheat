@@ -31,8 +31,6 @@ export const modifyMateria = async (req, res) => {
 
     const { id } = req.user;
 
-    console.log(req.body);
-
     try {
         const materiaExiste = await pool.query(
             'SELECT * FROM materias WHERE nombre = $1 and profesor_id = $2 AND deleted_at IS NULL and id != $3',

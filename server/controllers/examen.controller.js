@@ -2,7 +2,6 @@ import pool from '../db.js';
 
 export const validarExamen = async (req, res) => {
     const { nControl, nombre, claveExamen } = req.body;
-    console.log(req.body);
 
     try {
         const response = await pool.query(
