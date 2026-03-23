@@ -17,7 +17,6 @@ export const asignarMateria = async (req, res) => {
 
 export const quitarAsignacionMateria = async (req, res) => {
     const { idMateria, idGrupo } = req.params;
-    console.log('req.params de quitar asignaciones', req.params);
 
     try {
         await pool.query('DELETE FROM materia_grupo WHERE grupo_id = $1 AND materia_id = $2', [

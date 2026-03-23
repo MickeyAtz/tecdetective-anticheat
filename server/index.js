@@ -6,17 +6,12 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
 
-// Importacion de rutas del servidor
-import authRouter from './routes/auth.routes.js';
-import profesorRouter from './routes/profesores.routes.js';
-import materiaRouter from './routes/materias.routes.js';
-import grupoRouter from './routes/grupos.routes.js';
-import examenRouter from './routes/examen.routes.js';
-import grupoMateriasRouter from './routes/grupo_materias.routes.js';
-
 // Importacion de configuracion
 import corsOptions from './config/corsOptions.js';
 import { socketHandler } from './socket/socketHandler.js';
+
+// Enrutador central
+import apiRouter from './routes/index.routes.js';
 
 dotenv.config();
 
@@ -41,13 +36,7 @@ app.get('/', (req, res) => {
 });
 
 //Rutas de autenticación
-//TODO: Configuración de Rutas y creación de endpoints
-app.use('/api/auth', authRouter);
-app.use('/api/profesor', profesorRouter);
-app.use('/api/materia', materiaRouter);
-app.use('/api/grupo', grupoRouter);
-app.use('/api/examen', examenRouter);
-app.use('/api/grupo_materias', grupoMateriasRouter);
+app.use('/api', apiRouter);
 
 socketHandler(io);
 

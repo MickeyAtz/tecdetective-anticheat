@@ -199,8 +199,8 @@ const GruposPage = () => {
                 title={modalTitle}
                 isOpen={modalSubjects}
                 onClose={() => {
-                    setModalSubjects(false);
                     setGrupoMaterias(null);
+                    setModalSubjects(false);
                 }}
                 size="xl"
             >
