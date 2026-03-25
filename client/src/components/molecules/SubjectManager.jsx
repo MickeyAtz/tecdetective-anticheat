@@ -73,7 +73,7 @@ const SubjectManager = ({ grupoId, nombreGrupo }) => {
 
     return (
         <div className="flex flex-col md:flex-row gap-8 h-137.5 p-2">
-            {/* PANEL IZQUIERDO: MATERIAS ASIGNADAS (Tema Neutro) */}
+            {/* PANEL IZQUIERDO: MATERIAS ASIGNADAS*/}
             <div className="flex-1 flex flex-col min-h-0 bg-bg-tertiary/40 rounded-2xl p-5 border border-border-primary">
                 <div className="mb-4">
                     <h3 className="text-lg font-bold text-text-primary">Materias en el Grupo</h3>
@@ -89,7 +89,7 @@ const SubjectManager = ({ grupoId, nombreGrupo }) => {
                                 key={`asignada-${materia.id}`}
                                 materia={materia}
                                 icon={HiMiniXCircle}
-                                variant="danger" // Asumo que tu átomo Button maneja este variant
+                                variant="danger"
                                 actionLabel="Quitar"
                                 onClick={() => handleDeleteMateria(materia.id)}
                             />
@@ -102,7 +102,7 @@ const SubjectManager = ({ grupoId, nombreGrupo }) => {
                 </div>
             </div>
 
-            {/* PANEL DERECHO: CATÁLOGO (Acento con Brand Primary) */}
+            {/* PANEL DERECHO: CATÁLOGO*/}
             <div className="w-full md:w-85 flex flex-col bg-bg-secondary rounded-2xl p-5 border-2 border-brand-primary/10 shadow-sm">
                 <div className="mb-4">
                     <h3 className="text-lg font-bold text-brand-primary">Catálogo</h3>

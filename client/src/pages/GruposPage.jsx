@@ -48,7 +48,7 @@ const GruposPage = () => {
 
     const fetchGrupos = async () => {
         try {
-            const { grupos } = await getGrupos();
+            const grupos = await getGrupos();
             const grupoFechaFormateada = grupos.map((grupo) => ({
                 ...grupo,
                 creado_at: new Date(grupo.creado_at).toLocaleDateString('es-MX'),
@@ -100,8 +100,14 @@ const GruposPage = () => {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between w-full mb-2">
-                <h2>Gestión de Grupos</h2>
+            <div className="flex items-center justify-between w-full mb-2 border-b border-border-primary">
+                <div>
+                    <h1 className="text-text-primary text-3xl font-extrabold">Gestión de Grupos</h1>
+                    <p className="text-text-tertiary m-2">
+                        Gestiona tus grupos, crea, modifica y revisa tus grupos y las materias
+                        asociadas a ellos.
+                    </p>
+                </div>
                 <Button
                     onClick={() => {
                         (setIsModalOpen(true), setModalTitle('Nuevo Grupo'));
@@ -112,40 +118,38 @@ const GruposPage = () => {
                 </Button>
             </div>
 
-            <Card title="Grupos registrados">
-                <Table
-                    columns={columns}
-                    data={grupos}
-                    renderActions={(grupo) => (
-                        <>
-                            <Button
-                                title="Gestionar Materias del Grupo"
-                                onClick={() => {
-                                    setGrupoMaterias(grupo);
-                                    setModalSubjects(true);
-                                    setModalTitle(`Gestión de Materias - ${grupo.nombre}`);
-                                }}
-                                variant="secondary"
-                                icon={HiOutlineBookOpen}
-                            ></Button>
-                            <Button
-                                title="editar"
-                                onClick={() => handleEdit(grupo)}
-                                variant="primary"
-                                icon={HiOutlinePencil}
-                            ></Button>
-                            <Button
-                                title="eliminar"
-                                onClick={() => {
-                                    handleDelete(grupo.id);
-                                }}
-                                variant="danger"
-                                icon={HiTrash}
-                            ></Button>
-                        </>
-                    )}
-                ></Table>
-            </Card>
+            <Table
+                columns={columns}
+                data={grupos}
+                renderActions={(grupo) => (
+                    <>
+                        <Button
+                            title="Gestionar Materias del Grupo"
+                            onClick={() => {
+                                setGrupoMaterias(grupo);
+                                setModalSubjects(true);
+                                setModalTitle(`Gestión de Materias - ${grupo.nombre}`);
+                            }}
+                            variant="secondary"
+                            icon={HiOutlineBookOpen}
+                        ></Button>
+                        <Button
+                            title="editar"
+                            onClick={() => handleEdit(grupo)}
+                            variant="primary"
+                            icon={HiOutlinePencil}
+                        ></Button>
+                        <Button
+                            title="eliminar"
+                            onClick={() => {
+                                handleDelete(grupo.id);
+                            }}
+                            variant="danger"
+                            icon={HiTrash}
+                        ></Button>
+                    </>
+                )}
+            ></Table>
 
             <Modal
                 title={modalTitle}

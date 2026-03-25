@@ -23,6 +23,8 @@ const io = new Server(httpServer, {
     cors: corsOptions,
 });
 
+app.set('socketio', io);
+
 //Midleware
 app.use(cookieParser());
 app.use(cors(corsOptions));
@@ -41,6 +43,7 @@ app.use('/api', apiRouter);
 socketHandler(io);
 
 const PORT = process.env.BACKEND_PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en: http://localhost:${PORT}`);
+
+httpServer.listen(PORT, () => {
+    console.log(`Servidor hibrido (REST + Sockets) corriendo en http://localhost:${PORT}`);
 });

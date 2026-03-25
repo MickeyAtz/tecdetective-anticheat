@@ -1,6 +1,6 @@
 import axiosInstance from './axiosInstance';
 
-export const getGrupos = async () => (await axiosInstance.get('/grupo/')).data;
+export const getGrupos = async () => (await axiosInstance.get('/grupo/')).data.grupos;
 
 export const createGrupo = async (data) => (await axiosInstance.post('/grupo/', data)).data;
 

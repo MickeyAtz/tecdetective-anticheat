@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
     const [show, setShow] = useState(false);
 
-    // Manejo de la visibilidad del modal
     useEffect(() => {
         if (isOpen) {
             setShow(true);
@@ -13,7 +12,6 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
         }
     }, [isOpen]);
 
-    // Si no esta el show, no se muestra el modal, se retorna solo null
     if (!show) return null;
 
     // Tamaños del modal

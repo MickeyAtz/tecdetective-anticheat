@@ -44,7 +44,6 @@ const RegisterPage = () => {
         }
 
         try {
-            // Registro del profesor mediante POST:api/auth/profesor
             const response = await axiosInstance.post('/auth/profesor', JSON.stringify(dataForm));
 
             // Si el resultado es 201 (creado correctamente), se logea mediante el endpoint de login

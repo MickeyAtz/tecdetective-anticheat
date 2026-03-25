@@ -5,3 +5,12 @@ export const createExamen = async (examenData) =>
 
 export const getExamenes = async () => (await axiosInstance.get('/examen')).data;
 
+export const getExamenById = async (id) => (await axiosInstance.get(`/examen/${id}`)).data;
+
+export const cambiarEstadoExamen = async (id, estado) =>
+    (await axiosInstance.put(`/examen/${id}/estado`, { estado })).data;
+
+export const modifyExamen = async (id, examenData) =>
+    (await axiosInstance.put(`/examen/${id}`, examenData)).data;
+
+export const deleteExamen = async (id) => (await axiosInstance.delete(`/examen/${id}`)).data;

@@ -25,9 +25,6 @@ const formFields = [
     },
 ];
 
-// TODO: VERIFICAR LOS CONTROLADRES, API Y TODO DE MATERIAS!!!
-// TODO: Terminar el CRUD!
-
 const MateriasPage = () => {
     const [materias, setMaterias] = useState([]);
 
@@ -58,7 +55,6 @@ const MateriasPage = () => {
     const handleSubmit = async (formData) => {
         try {
             if (editData) {
-                // modifyMateria(data, id);
                 await modifyMateria(formData, editData.id);
             } else {
                 console.log(formData);
@@ -98,8 +94,15 @@ const MateriasPage = () => {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between w-full mb-2">
-                <h2>Gestión de Materias</h2>
+            <div className="flex items-center justify-between w-full mb-2 border-b border-border-primary gap-y-4 ">
+                <div>
+                    <h1 className="text-3xl font-extrabold text-text-primary">
+                        Gestión de Materias
+                    </h1>
+                    <p className="text-text-tertiary mt-2 mb-2">
+                        Gestiona las materias, crea, modifica y revisa tus materias.
+                    </p>
+                </div>
                 <Button
                     onClick={() => {
                         setIsModalOpen(true);
@@ -109,27 +112,25 @@ const MateriasPage = () => {
                     Agregar Materia
                 </Button>
             </div>
-            <Card title="Materias Registradas">
-                <Table
-                    columns={columns}
-                    data={materias}
-                    renderActions={(materia) => (
-                        <>
-                            <Button
-                                title="editar"
-                                onClick={() => handleEdit(materia)}
-                                icon={HiOutlinePencil}
-                            />
-                            <Button
-                                title="eliminar"
-                                variant="danger"
-                                onClick={() => handleDelete(materia)}
-                                icon={HiTrash}
-                            />
-                        </>
-                    )}
-                ></Table>
-            </Card>
+            <Table
+                columns={columns}
+                data={materias}
+                renderActions={(materia) => (
+                    <>
+                        <Button
+                            title="editar"
+                            onClick={() => handleEdit(materia)}
+                            icon={HiOutlinePencil}
+                        />
+                        <Button
+                            title="eliminar"
+                            variant="danger"
+                            onClick={() => handleDelete(materia)}
+                            icon={HiTrash}
+                        />
+                    </>
+                )}
+            ></Table>
             <Modal
                 title={modalTitle}
                 isOpen={isModalOpen}
@@ -159,7 +160,7 @@ const MateriasPage = () => {
                 <div className="flex flex-col gap-6 p-2">
                     <div>
                         <br />
-                        <p>¿Estás seguro de eliminar este grupo?</p>
+                        <p>¿Estás seguro de eliminar esta materia?</p>
                         <br />
                         <Alerta type="info">Esta opción no se puede deshacer.</Alerta>
                     </div>

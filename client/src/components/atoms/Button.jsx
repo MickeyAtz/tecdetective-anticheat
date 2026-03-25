@@ -8,6 +8,7 @@ const Button = ({
     onClick,
     disabled = false,
     title = '',
+    className = '',
 }) => {
     //Definicion y creacion del componente IconComponent si se manda icon
     const hasOnlyIcon = icon && !children;
@@ -27,16 +28,16 @@ const Button = ({
     // Definicion de tamaños
     //  Completar los tamaños del botón
     const variantSizes = {
-        sm: 'text-xs px-3 py-1.5', // Para micro-interacciones
-        md: 'text-sm px-4 py-2', // El estándar para la mayoría de las UIs
-        lg: 'text-base px-6 py-3', // Para CTAs principales
+        sm: 'text-xs px-3 py-1.5',
+        md: 'text-sm px-4 py-2',
+        lg: 'text-base px-6 py-3',
     };
     //  Definir estilos del botón cuando tenga ícono
     const iconStyle = 'aspect-square !p-2';
 
     return (
         <button
-            className={`${baseStyles} ${variantStyles[variant]} ${variantSizes[size]} ${IconComponent ? iconStyle : ''}`}
+            className={`${baseStyles} ${variantStyles[variant]} ${variantSizes[size]} ${IconComponent ? iconStyle : ''} ${className}`}
             onClick={onClick}
             title={title || (hasOnlyIcon ? children : '')}
             disabled={disabled && 'disabled'}

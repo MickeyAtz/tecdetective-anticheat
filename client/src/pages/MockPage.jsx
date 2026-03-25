@@ -55,7 +55,7 @@ const DesignSystemPage = () => {
                 id: 'inc-1',
                 nombre: 'Cambio de pestaña',
                 descripcion: 'Se detectó salida del navegador por más de 5 segundos.',
-                fechaYHora: '10:15 AM', 
+                fechaYHora: '10:15 AM',
             },
         ],
     };

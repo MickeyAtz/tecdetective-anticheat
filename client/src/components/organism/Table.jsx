@@ -8,14 +8,12 @@ const STYLES = {
         'w-full bg-bg-secondary p-4 rounded-lg border border-border-primary shadow-sm transition-colors duration-300',
     searchContainer: 'mb-4 w-full max-w-md',
     tableContainer: 'overflow-x-auto rounded-t-lg border border-border-primary',
-    table: 'w-full text-sm border-collapse', // Se elimina text-left para control individual
+    table: 'w-full text-sm border-collapse',
     thead: 'bg-bg-tertiary text-text-primary border-b border-border-primary',
-    // Centrado de encabezados
     headerCell:
         'px-6 py-4 font-bold uppercase tracking-wider cursor-pointer select-none hover:opacity-80 transition-opacity text-center',
     tbody: 'divide-y divide-border-primary bg-bg-secondary',
     row: 'hover:bg-bg-tertiary transition-colors duration-200',
-    // Centrado de celdas de datos
     cell: 'px-6 py-4 whitespace-nowrap text-text-secondary font-medium text-center',
     actionsCell: 'px-6 py-4 text-center',
     actionsWrapper: 'flex gap-2 justify-center items-center',
@@ -112,12 +110,12 @@ export default function Table({
                                     </div>
                                 </th>
                             ))}
-                            {renderActions && <th className="px-6 py-4 text-center">Acciones</th>}
+                            {renderActions && <th className="px-6 py-4 text-center">ACCIONES</th>}
                         </tr>
                     </thead>
 
                     <tbody className={STYLES.tbody}>
-                        {paginatedData.map((row, index) => (
+                        {paginatedData.map((row) => (
                             <tr key={row.id} className={STYLES.row}>
                                 {columns.map((col) => (
                                     <td key={col.field} className={STYLES.cell}>

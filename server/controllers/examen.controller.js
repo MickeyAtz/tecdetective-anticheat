@@ -5,7 +5,7 @@ export const validarExamen = async (req, res) => {
 
     try {
         const response = await pool.query(
-            "SELECT * FROM examenes WHERE codigo_acceso = $1 AND estado IN ('espera', 'activo')",
+            "SELECT * FROM examenes WHERE codigo_acceso = $1 AND estado IN ('ESPERA', 'ACTIVO')",
             [claveExamen]
         );
 
@@ -73,7 +73,7 @@ export const obtenerExamenes = async (req, res) => {
 
     try {
         const result = await pool.query(
-            `SELECT * FROM examenes
+            `SELECT * FROM vista_examenes_detalles
             WHERE profesor_id = $1
             AND deleted_at IS NULL
             ORDER BY programed_at ASC`,
@@ -138,7 +138,6 @@ export const actualizarExamen = async (req, res) => {
 
 export const eliminarExamen = async (req, res) => {
     const { id } = req.params;
-
     try {
         await pool.query(
             `
@@ -147,6 +146,52 @@ export const eliminarExamen = async (req, res) => {
             [id]
         );
         return res.status(200).json({ message: 'Examen eliminado correctamente.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error en el servidor.' });
+    }
+};
+
+export const cambiarEstadoExamen = async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    const estadosPermitidos = ['PENDIENTE', 'ESPERA', 'ACTIVO', 'FINALIZADO'];
+
+    if (!estadosPermitidos.includes(estado)) {
+        return res.status(400).json({ message: 'Estado no valido' });
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                UPDATE examenes
+                SET estado = $1
+                WHERE id = $2
+                RETURNING *
+            `,
+            [estado, id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'No se encontro el examen.' });
+        }
+
+        const io = req.app.get('socketio');
+        const codigo_sala = result.rows[0].codigo_acceso;
+
+        if (io) {
+            if (estado === 'ACTIVO') {
+                io.to(codigo_sala).emit('orden_inicio_examen');
+            } else if (estado === 'FINALIZADO') {
+                io.to(codigo_sala.emit('orden_fin_examen'));
+            }
+        }
+
+        return res.status(200).json({
+            message: `El examen ahora está en estado: ${estado}`,
+            examen: result.rows[0],
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error en el servidor.' });
