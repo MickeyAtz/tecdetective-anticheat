@@ -3,13 +3,13 @@ export const STUDENTS_MOCK = [
         id: 'st-001',
         nombre: 'Miguel Ángel Álvarez',
         status: 'success',
-        incidents: [],
+        incidentes: [],
     },
     {
         id: 'st-002',
         nombre: 'Alondra García',
         status: 'warning',
-        incidents: [
+        incidentes: [
             {
                 id: 'inc-1',
                 nombre: 'Cambio de pestaña',
@@ -22,7 +22,7 @@ export const STUDENTS_MOCK = [
         id: 'st-003',
         nombre: 'Carlos Tabarez',
         status: 'danger',
-        incidents: [
+        incidentes: [
             {
                 id: 'inc-2',
                 nombre: 'Objeto no permitido',
@@ -41,6 +41,6 @@ export const STUDENTS_MOCK = [
         id: 'st-004',
         nombre: 'Betín Álvarez',
         status: 'success',
-        incidents: [],
+        incidentes: [],
     },
 ];

@@ -14,3 +14,6 @@ export const modifyExamen = async (id, examenData) =>
     (await axiosInstance.put(`/examen/${id}`, examenData)).data;
 
 export const deleteExamen = async (id) => (await axiosInstance.delete(`/examen/${id}`)).data;
+
+export const getHistorialExamen = async (id) =>
+    (await axiosInstance.get(`/examen/resultados/${id}`)).data;

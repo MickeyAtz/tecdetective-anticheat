@@ -8,6 +8,7 @@ import {
     cambiarEstadoExamen,
     eliminarExamen,
     actualizarExamen,
+    getHistorialExamen,
 } from '../controllers/examen.controller.js';
 
 const router = express.Router();
@@ -26,5 +27,7 @@ router.put('/:id', verifyToken, actualizarExamen);
 router.put('/:id/estado', verifyToken, cambiarEstadoExamen);
 
 router.delete('/:id', verifyToken, eliminarExamen);
+
+router.get('/resultados/:id', verifyToken, getHistorialExamen);
 
 export default router;

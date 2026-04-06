@@ -93,7 +93,7 @@ export const obtenerExamenPorId = async (req, res) => {
     try {
         const result = await pool.query(
             `
-                SELECT * FROM examenes
+                SELECT * FROM vista_examenes_detalles
                 WHERE id = $1
             `,
             [id]
@@ -191,6 +191,65 @@ export const cambiarEstadoExamen = async (req, res) => {
         return res.status(200).json({
             message: `El examen ahora está en estado: ${estado}`,
             examen: result.rows[0],
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error en el servidor.' });
+    }
+};
+
+export const getHistorialExamen = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [examenResponse, participantesResponse] = await Promise.all([
+            pool.query('SELECT * FROM vista_examenes_detalles WHERE id = $1', [id]),
+            pool.query(
+                `
+                SELECT
+                    p.id,
+                    p.numero_control,
+                    p.nombre_completo AS nombre,
+                    i.id AS incident_id,
+                    i.tipo_evento AS incidente_nombre,
+                    i.descripcion AS incidente_desc,
+                    i.creado_at AS incidente_fecha
+                FROM participantes p
+                LEFT JOIN logs_incidentes i
+                    ON p.id = i.participante_id
+                WHERE p.examen_id = $1
+                ORDER BY p.nombre_completo ASC
+                `,
+                [id]
+            ),
+        ]);
+
+        const participantesAgrupados = participantesResponse.rows.reduce((acumulador, row) => {
+            if (!acumulador[row.id]) {
+                acumulador[row.id] = {
+                    id: row.id,
+                    numero_control: row.numero_control,
+                    nombre: row.nombre,
+                    estado: row.estado,
+                    incidentes: [],
+                };
+            }
+
+            if (row.incidente_id) {
+                acumulador[row.id].incidentes.push({
+                    id: row.incidente_id,
+                    nombre: row.incidente_nombre,
+                    descripcion: row.incidente_desc,
+                    fechaYHora: row.incidente_fecha,
+                });
+            }
+
+            return acumulador;
+        }, {});
+
+        return res.status(200).json({
+            examenResult: examenResponse.rows[0],
+            participantesResult: Object.values(participantesAgrupados),
         });
     } catch (error) {
         console.error(error);
