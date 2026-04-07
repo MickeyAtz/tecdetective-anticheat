@@ -4,6 +4,7 @@ export const validarExamen = async (req, res) => {
     const { nControl, nombre, claveExamen } = req.body;
 
     try {
+        // Validacion del examen.
         const response = await pool.query(
             "SELECT * FROM examenes WHERE codigo_acceso = $1 AND estado IN ('ESPERA', 'ACTIVO')",
             [claveExamen]
@@ -17,6 +18,7 @@ export const validarExamen = async (req, res) => {
 
         const idReal = response.rows[0].id;
 
+        // Insercion del participante
         try {
             const result = await pool.query(
                 'INSERT INTO participantes(examen_id, numero_control, nombre_completo) VALUES($1, $2, $3) RETURNING *',
@@ -30,6 +32,7 @@ export const validarExamen = async (req, res) => {
                 message: 'Bienvenido al examen',
                 idParticipante: result.rows[0].id,
             });
+        // Manejo de errores por unicidad (PostgreSQL)
         } catch (dbError) {
             if (dbError.code === '23505') {
                 const result = await pool.query(
@@ -55,6 +58,63 @@ export const validarExamen = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error en el servidor.' });
+    }
+};
+
+export const validarExamen2 = async (req, res) => {
+    const { nControl, nombre, claveExamen } = req.body;
+
+    if (!nControl || !nombre || !claveExamen) {
+        return res.status(400).json({
+            ok: false,
+            message: 'Datos incompletos'
+        });
+    }
+
+    try {
+        // Validacion de Examen
+        const examResponse = await pool.query(
+            `SELECT id FROM examenes 
+             WHERE codigo_acceso = $1 
+             AND estado IN ('ESPERA', 'ACTIVO')`,
+            [claveExamen]
+        );
+
+        if (examResponse.rows.length === 0) {
+            return res.status(401).json({
+                ok: false,
+                message: 'No existe el examen o está inactivo.'
+            });
+        }
+
+        const idExamen = examResponse.rows[0].id;
+
+        // Insercion del participante
+        const result = await pool.query(
+            `
+            INSERT INTO participantes (examen_id, numero_control, nombre_completo)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (examen_id, numero_control)
+            DO UPDATE SET nombre_completo = EXCLUDED.nombre_completo
+            RETURNING id;
+            `,
+            [idExamen, nControl, nombre]
+        );
+
+        
+        return res.status(200).json({
+            ok: true,
+            idExamen,
+            idParticipante: result.rows[0].id,
+            message: 'Bienvenido al examen'
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok: false,
+            message: 'Error en el servidor.'
+        });
     }
 };
 

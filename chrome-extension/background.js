@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Obtenemos los valores del local.storage
         chrome.storage.local.get(['usuario'], (result) => {
             const usuarioSeguro = result.usuario || sesionActual;
-
+            
             if (socket && socket.connected && usuarioSeguro) {
                 console.log(usuarioSeguro);
                 socket.emit('notificar_incidente', {

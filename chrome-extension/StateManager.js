@@ -9,14 +9,14 @@ export const EXAM_STATES = {
 class StateManager {
     // CREAR SESION
     // guarda el estado actual y datos del usuario
-    async setSession(fase, usuarioData = null) {
+    async setSession(usuarioData = null, examenData = null) {
         return new Promise((resolve) => {
             const data = {
-                fase: fase,
+                examen: examenData,
                 usuario: usuarioData,
             };
 
-            if (fase === EXAM_STATES.EXAMEN) {
+            if (examenData && examenData.fase === EXAM_STATES.EXAMEN) {
                 data.horaInicio = new Date().toISOString();
             }
 
@@ -32,17 +32,21 @@ class StateManager {
         return new Promise((resolve) => {
             if (typeof chrome === 'undefined' || !chrome.storage) {
                 console.warn('Entorno no compatible con Chrome Storage.');
-                return resolve({ fase: 'registro', usuario: null });
+                return resolve({
+                    examen: { fase: EXAM_STATES.REGISTRO },
+                    usuario: null,
+                    horaInicio: null,
+                });
             }
 
-            chrome.storage.local.get(['fase', 'usuario', 'horaInicio'], (result) => {
+            chrome.storage.local.get(['examen', 'usuario', 'horaInicio'], (result) => {
                 if (chrome.runtime.lastError) {
                     console.error('Error en el Storage: ', chrome.runtime.lastError);
-                    return resolve({ false: 'registro', usuario: null });
+                    return resolve({ examen: { fase: EXAM_STATES.REGISTRO }, usuario: null });
                 }
 
                 resolve({
-                    fase: result.fase || EXAM_STATES.REGISTRO,
+                    examen: result.examen || { fase: EXAM_STATES.REGISTRO },
                     usuario: result.usuario || null,
                     horaInicio: result.horaInicio || null,
                 });
@@ -50,9 +54,17 @@ class StateManager {
         });
     }
 
-    // BORRRAR SESIÓN
-    // Limpia la sesión actual del usuario
+    // BORRRAR SESIÓN DEL EXAMEN
     async clearSession() {
+        return new Promise((resolve) => {
+            chrome.storage.local.remove(['examen', 'horaInicio'], () => {
+                resolve();
+            });
+        });
+    }
+
+    // BORRAR TODOS LOS DATOS DEL USUARIO Y EXAMEN
+    async logout() {
         return new Promise((resolve) => {
             chrome.storage.local.clear(() => {
                 resolve();
@@ -60,8 +72,24 @@ class StateManager {
         });
     }
 
-    async updateFase(nuevaFase) {
-        return chrome.storage.local.set({ fase: nuevaFase });
+    // ACTUALIZACION DEL EXAMEN
+    async updateExamen(nuevosDatos) {
+        const { examen } = await this.getSession();
+
+        const examenActualizado = {
+            ...(examen || {}),
+            ...nuevosDatos,
+        };
+
+        const data = {
+            examen: examenActualizado,
+        };
+
+        if (nuevosDatos.fase === EXAM_STATES.EXAMEN) {
+            data.horaInicio = new Date().toISOString();
+        }
+
+        return chrome.storage.local.set(data);
     }
 }
 
