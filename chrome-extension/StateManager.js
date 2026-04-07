@@ -20,7 +20,9 @@ class StateManager {
                 data.horaInicio = new Date().toISOString();
             }
 
-            chrome.storage.local.set(data);
+            chrome.storage.local.set(data, () => {
+                resolve();
+            });
         });
     }
 

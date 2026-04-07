@@ -39,7 +39,15 @@ const statusConfig = {
     },
 };
 
-const ExamenCard = ({ examen, onEdit, onDelete, onStatusChange, onViewMonitor, onViewResults }) => {
+const ExamenCard = ({
+    examen,
+    onEdit,
+    onDelete,
+    onStatusChange,
+    onViewMonitor,
+    onViewResults,
+    onStartExamen,
+}) => {
     const {
         id,
         titulo,
@@ -140,7 +148,9 @@ const ExamenCard = ({ examen, onEdit, onDelete, onStatusChange, onViewMonitor, o
 
                 {estado === 'PENDIENTE' && (
                     <button
-                        onClick={() => onStatusChange(id, 'ESPERA')}
+                        onClick={() => {
+                            (onStatusChange(id, 'ESPERA'), onStartExamen(id));
+                        }}
                         className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brand-primary text-white font-semibold hover:bg-brand-secondary transition"
                     >
                         <DoorOpen size={16} /> Abrir Lobby

@@ -9,6 +9,7 @@ import GruposPage from '@/pages/GruposPage.jsx';
 import MateriasPage from '@/pages/MateriasPage.jsx';
 import ExamenHistorial from '@/pages/ExamenHistorial.jsx';
 import ExamenMonitorPage from '@/pages/ExamenMonitorPage.jsx';
+import ExamenLobbyPage from '@/pages/ExamenLobbyPage.jsx';
 // Contextos
 import { useUser } from '@/context/UserContext.jsx';
 
@@ -38,6 +39,7 @@ function App() {
                     <Route path="dashboard" element={<DashboardPage />} />
                     <Route path="examenes/" element={<ExamenPage />} />
                     <Route path="examen/">
+                        <Route path="lobby/:id" element={<ExamenLobbyPage />} />
                         <Route path="monitor/:id" element={<ExamenMonitorPage />} />
                         <Route path="resultados/:id" element={<ExamenHistorial />} />
                     </Route>

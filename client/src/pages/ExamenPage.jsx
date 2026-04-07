@@ -201,6 +201,7 @@ export const ExamenPage = () => {
                             onEdit={() => handleAbrirModalEditar(examen)}
                             onDelete={() => handleDelete(examen.id)}
                             onStatusChange={handleStatusChange}
+                            onStartExamen={(id) => navigate(`/examen/lobby/${id}`)}
                             onViewMonitor={(id) => navigate(`/examen/monitor/${id}`)}
                             onViewResults={(id) => navigate(`/examen/resultados/${id}`)}
                         />

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Badge from '@/components/atoms/Badge';
 import IncidentList from '@/components/molecules/IncidentList';
 
-const ListItem = ({ student }) => {
+const ListItem = ({ student, onlyData = false }) => {
     // Estado de la barra de incidentes
     const [isOpen, setIsOpen] = useState(false);
 
@@ -18,52 +18,63 @@ const ListItem = ({ student }) => {
                 onClick={() => hasIncidents && setIsOpen(!isOpen)}
             >
                 {/* Informacion del alumno (Nombre y estado)*/}
-                <div className="flex-1 flex justify-start">
+                <div className="flex-1 flex justify-between">
                     <span className="font-semibold text-text-primary text-base">
                         {student.nombre}
                     </span>
-                </div>
-
-                <div className="flex-1 flex justify-center">
-                    <Badge
-                        className={
-                            listaIncidentes.length === 0
-                                ? 'CONFIABLE'
-                                : listaIncidentes.length <= 5
-                                  ? 'ADVERTENCIA'
-                                  : 'CRITICO'
-                        }
-                    >
-                        {listaIncidentes.length === 0
-                            ? 'Confiable'
-                            : listaIncidentes.length <= 5
-                              ? 'Riesgo Medio'
-                              : 'Alto Riesgo'}
-                    </Badge>
-                </div>
-
-                {/* Seccion de incidentes (LISTA INCIDENTES) */}
-                <div className="flex-1 flex justify-end items-center gap-3">
-                    {hasIncidents ? (
-                        <>
-                            <span className="text-xs text-text-secondary font-medium">
-                                {listaIncidentes.length}{' '}
-                                {listaIncidentes.length === 1 ? 'incidente' : 'incidentes'}
-                            </span>
-                            <span
-                                className={`text-xs text-brand-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
-                            >
-                                ▼
-                            </span>
-                        </>
-                    ) : (
-                        <span className="text-xs text-text-tertiary italic">Sin incidentes</span>
+                    {onlyData && (
+                        <span className="font-semibold text-text-secondary text-base">
+                            Numero de control: {student.nControl}
+                        </span>
                     )}
                 </div>
+                {/* Renderizado de solamente la informacion del usuario o lista con incidentes tambien*/}
+                {!onlyData && (
+                    <>
+                        <div className="flex-1 flex justify-center">
+                            <Badge
+                                className={
+                                    listaIncidentes.length === 0
+                                        ? 'CONFIABLE'
+                                        : listaIncidentes.length <= 5
+                                          ? 'ADVERTENCIA'
+                                          : 'CRITICO'
+                                }
+                            >
+                                {listaIncidentes.length === 0
+                                    ? 'Confiable'
+                                    : listaIncidentes.length <= 5
+                                      ? 'Riesgo Medio'
+                                      : 'Alto Riesgo'}
+                            </Badge>
+                        </div>
+
+                        {/* Seccion de incidentes (LISTA INCIDENTES) */}
+                        <div className="flex-1 flex justify-end items-center gap-3">
+                            {hasIncidents ? (
+                                <>
+                                    <span className="text-xs text-text-secondary font-medium">
+                                        {listaIncidentes.length}{' '}
+                                        {listaIncidentes.length === 1 ? 'incidente' : 'incidentes'}
+                                    </span>
+                                    <span
+                                        className={`text-xs text-brand-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+                                    >
+                                        ▼
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="text-xs text-text-tertiary italic">
+                                    Sin incidentes
+                                </span>
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Lista de incidentes del usuario */}
-            {isOpen && hasIncidents && (
+            {!onlyData && isOpen && hasIncidents && (
                 <div className="border-t border-border-primary">
                     <IncidentList incidents={listaIncidentes} />
                 </div>

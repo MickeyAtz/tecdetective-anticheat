@@ -31,28 +31,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const result = await response.json();
         // Si el resultado esta bien, inicializamos el socket y cambiamos la sesion a modo espera.
+        console.log('Preparacion para mandar mensaje y conexion.');
 
-        if (result.ok) {
-            // Cambio de estado en la sesion
-            await stateManager.setSession(EXAM_STATES.ESPERA, data);
-            // Mandamos mensaje a background.js y recargamos la pagina
-            chrome.runtime.sendMessage({ action: 'iniciar_conexion', datos: data });
-            location.reload();
+        // Revision de respuesta y logica para comenzar.
+        if (response.status === 200) {
+            // Impresion de mensaje de reconexion
+            if (!result.ok) {
+                alert(result.message);
+            }
+
+            const dataFinal = {
+                ...data,
+                idExamen: result.idExamen,
+                idParticipante: result.idParticipante,
+                rol: 'estudiante',
+            };
+
+            // Cambio de estado de la sesion (Nuevo ingreso)
+            await stateManager.setSession(EXAM_STATES.ESPERA, dataFinal);
+
+            // Comunicacion con bakground.js
+            chrome.runtime.sendMessage({ action: 'iniciar_conexion', datos: dataFinal });
+
+            console.log('Mensaje enviado: iniciar_conexion', dataFinal);
+
+            // Ocultar formulario y mostrar tarjeta
+            formSection.style.display = 'none';
+            statusSection.style.display = 'block';
+            renderizarInterfaz(EXAM_STATES.ESPERA, dataFinal, null, container);
         } else {
-            alert('ERROR: ' + result.message);
+            alert('ERROR' + result.message);
         }
     });
 
     // Recibir evento para cambiar la interfaz
-    chrome.runtime.onMessage.addListener((request) => {
+    chrome.runtime.onMessage.addListener(async (request) => {
         if (request.action === 'cambiar_interfaz_examen') {
-            location.reload();
+            const { fase, usuario, horaInicio } = await stateManager.getSession();
+            renderizarInterfaz(fase, usuario, horaInicio, container);
         }
     });
 });
 
 function renderizarInterfaz(fase, usuario, horaInicio, container) {
-    if(!container) return;
+    if (!container) return;
     // Limpieza de estados/clases del container
     container.className = 'status-card';
 
@@ -103,7 +125,15 @@ function renderizarInterfaz(fase, usuario, horaInicio, container) {
         `;
         document.getElementById('btn-logout').onclick = () => {
             stateManager.clearSession();
-            location.reload();
+
+            // Regresamos al formulario
+            document.getElementById('status-section').style.display = 'none';
+            document.getElementById('form-section').style.display = 'block';
+
+            // Limpieza de inputs
+            document.getElementById('nControl').value = '';
+            document.getElementById('nombre').value = '';
+            document.getElementById('claveExamen').value = '';
         };
     }
 }

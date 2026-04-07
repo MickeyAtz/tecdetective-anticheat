@@ -13,7 +13,6 @@ import {
 
 const router = express.Router();
 
-//TODO: Resto de endpoints del examen
 router.post('/validar', validarExamen);
 
 router.post('/', verifyToken, createExamen);

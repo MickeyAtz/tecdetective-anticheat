@@ -9,27 +9,51 @@ export const validarExamen = async (req, res) => {
             [claveExamen]
         );
 
-        if (response.rows.length > 0) {
-            const idExamen = response.rows[0].id;
-            await pool.query(
-                'INSERT INTO participantes(examen_id, numero_control, nombre_completo) VALUES($1, $2, $3)',
-                [idExamen, nControl, nombre]
-            );
-            return res.status(200).json({ ok: true, message: 'Bienvenido al examen.' });
-        } else
+        if (response.rows.length === 0) {
             return res
                 .status(401)
                 .json({ message: 'No existe el examen o esta inactivo.', ok: false });
-    } catch (error) {
-        console.error(error);
-
-        if (error.code === '23505') {
-            return res.status(200).json({
-                ok: false,
-                message: 'Reconexión exitosa. Bienvenido de vuelta al examen.',
-            });
         }
 
+        const idReal = response.rows[0].id;
+
+        try {
+            const result = await pool.query(
+                'INSERT INTO participantes(examen_id, numero_control, nombre_completo) VALUES($1, $2, $3) RETURNING *',
+                [idReal, nControl, nombre]
+            );
+            console.log(result.rows[0]);
+
+            return res.status(200).json({
+                ok: true,
+                idExamen: idReal,
+                message: 'Bienvenido al examen',
+                idParticipante: result.rows[0].id,
+            });
+        } catch (dbError) {
+            if (dbError.code === '23505') {
+                const result = await pool.query(
+                    `
+                        SELECT p.id FROM participantes p 
+                        LEFT JOIN examenes e
+                            ON p.examen_id = e.id
+                        WHERE p.examen_id = $1
+                        AND numero_control = $2
+                    `,
+                    [idReal, nControl]
+                );
+                console.log(result.rows[0]);
+                return res.status(200).json({
+                    ok: true,
+                    idExamen: idReal,
+                    idPariticpante: result.rows[0].id,
+                    message: 'Reconexion exitosa. Bienvenido de vuelta',
+                });
+            }
+            throw dbError;
+        }
+    } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Error en el servidor.' });
     }
 };
