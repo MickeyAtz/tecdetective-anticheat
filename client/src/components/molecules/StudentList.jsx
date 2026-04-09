@@ -9,7 +9,7 @@ const StudentList = ({ students, header = '', onlyData = false }) => {
             <h2 className="text-xl font-bold text-text-primary">{header}</h2>
             {students.map((student) => (
                 <StudentListItem
-                    key={student.id}
+                    key={onlyData ? student.idParticipante : student.id}
                     student={student}
                     onlyData={onlyData}
                 ></StudentListItem>

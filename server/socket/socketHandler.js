@@ -8,65 +8,75 @@ export const socketHandler = (io) => {
 
         // Union al examen
         socket.on('unirse_examen', (datos) => {
-            if (!datos || !datos.claveExamen) return;
+            if (!datos?.examen?.idExamen) return;
 
             socket.datosUsuario = datos;
-            socket.join(datos.idExamen);
 
-            console.log(`Alumno ${datos.nombre} en la sala: ${datos.claveExamen}`);
+            socket.join(datos.examen.idExamen);
 
-            if (datos.rol !== 'profesor') {
-                socket.to(datos.claveExamen).emit('nuevo_participante', datos);
+            console.log(
+                `Alumno ${datos.usuario?.nombre || 'Profesor'} en la sala: ${datos.examen.idExamen}`
+            );
+
+            if (datos.examen.rol !== 'profesor') {
+                socket.to(datos.examen.idExamen).emit('nuevo_participante', datos.usuario);
             }
         });
 
         // Reconeccion en el profesor side
         socket.on('solicitar_conectados', async (idExamen, callback) => {
             const socketsEnSala = await io.in(idExamen).fetchSockets();
-            const lista = socketsEnSala
-                .filter((s) => s.datosUsuario && s.datosUsuario.rol !== 'profesor')
-                .map((s) => s.datosUsuario);
 
-            console.log('Lista solicitada: ', lista);
+            const lista = socketsEnSala
+                .filter((s) => s.datosUsuario && s.datosUsuario.examen?.rol !== 'profesor')
+                .map((s) => s.datosUsuario);
 
             callback(lista);
         });
 
         // Inicializacion del examen
         socket.on('iniciar_examen_profesor', (config) => {
-            // Mensaje para extension web
             io.to(config.idExamen).emit('orden_inicio_examen', config);
-            console.log('El profesor inicio el examen: ', config.idExamen);
         });
 
         // Reportar incidente y guardar en db
         socket.on('notificar_incidente', async (data) => {
-            const { nControl, tipo, detalle, claveExamen, nombre } = data;
+            console.log('Solicitud recibida, notificar_incidente: ', data);
+
+            const { idParticipante, tipo, detalle } = data;
+
             try {
                 await pool.query(
                     `
-                        INSERT INTO logs_incidentes(participante_id, tipo_evento, descripcion) 
-                        VALUES(
-                            (SELECT id FROM pariticpantes WHERE ), 
-                            )
+                    INSERT INTO logs_incidentes(participante_id, tipo_evento, descripcion)
+                    VALUES($1, $2, $3)
                     `,
-                    [nControl, tipo, detalle, claveExamen]
+                    [idParticipante, tipo, detalle]
                 );
 
-                io.to(claveExamen).emit('alerta_profesor', {
-                    nControl,
-                    nombre,
-                    tipo,
-                    detalle,
+                io.to(data.idExamen).emit('alerta_profesor', {
+                    ...data,
                     hora: new Date().toLocaleTimeString(),
                 });
+
+                console.log('Incidente guardado correctamente.');
             } catch (error) {
                 console.error(error);
             }
         });
 
         socket.on('disconnect', () => {
-            console.log('Cliente socket desconectado');
+            if (!socket.datosUsuario) return;
+
+            const { examen, usuario, rol } = socket.datosUsuario;
+
+            if (rol === 'profesor') return;
+
+            console.log(`Alumno desconectado: ${usuario.nombre}`);
+
+            socket.to(examen.id).emit('participante_desconectado', {
+                nControl: usuario.nControl,
+            });
         });
     });
 };

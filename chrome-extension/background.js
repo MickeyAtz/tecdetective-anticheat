@@ -1,71 +1,97 @@
 import { io } from './socket.io.esm.min.js';
+import { stateManager, EXAM_STATES } from './StateManager.js';
 
 let socket = null;
-let sesionActual = null;
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'iniciar_conexion') {
-        sesionActual = request.datos;
         conectarServidor(request.datos);
     }
 
     if (request.action === 'reportar_incidente') {
-        // Obtenemos los valores del local.storage
-        chrome.storage.local.get(['usuario'], (result) => {
-            const usuarioSeguro = result.usuario || sesionActual;
-            
-            if (socket && socket.connected && usuarioSeguro) {
-                console.log(usuarioSeguro);
-                socket.emit('notificar_incidente', {
-                    ...request.datos,
-                    nControl: usuarioSeguro.nControl,
-                    claveExamen: usuarioSeguro.claveExamen,
-                    idExamen: usuarioSeguro.idExamen,
-                });
-                console.log('Incidente reportado para: ', usuarioSeguro.nControl);
-            }
-        });
+        manejarIncidente(request.datos);
     }
-
-    console.log('Mensaje recibido en background: ', request.action);
 });
 
+async function manejarIncidente(datosIncidente) {
+    const { usuario, examen } = await stateManager.getSession();
+
+    if (!usuario || !examen) {
+        console.log('No hay sesion activa.');
+        return;
+    }
+
+    await asegurarConexion({ usuario, examen });
+
+    if (!socket || !socket.connected) {
+        console.log('No hay socket disponible.');
+        return;
+    }
+
+    socket.emit('notificar_incidente', {
+        ...datosIncidente,
+        nControl: usuario.nControl,
+        nombre: usuario.nombre,
+        claveExamen: examen.claveExamen,
+        idExamen: examen.idExamen,
+        idParticipante: examen.idParticipante,
+    });
+
+    console.log('Incidente enviado');
+}
+
+async function asegurarConexion(datos) {
+    if (socket && socket.connected) return;
+
+    await conectarServidor(datos);
+    await esperarConexion();
+}
+
 function conectarServidor(datos) {
-    if (socket) socket.disconnect();
+    return new Promise((resolve) => {
+        if (socket) socket.disconnect();
 
-    socket = io('http://127.0.0.1:3000', { transports: ['websocket'] });
-
-    socket.on('connect_error', (error) => {
-        console.error('Error critico al conectar Socket.IO: ', error.message);
-        console.error('Detalles del error: ', error);
-    });
-
-    socket.on('disconnect', (reason) => {
-        console.warn('Desconexion del socket: ', reason);
-    });
-
-    // Unirse al examen y verificacion de conexion
-    socket.on('connect', () => {
-        console.log('Socket conectado, uniendose a la sala.');
-        socket.emit('unirse_examen', datos);
-    });
-
-    socket.on('orden_inicio_examen', (config) => {
-        chrome.storage.local.set(
-            {
-                fase: 'examen',
-                horaInicio: new Date().toISOString(),
-            },
-            () => {
-                chrome.runtime.sendMessage({ action: 'cambiar_interfaz_examen' });
-            }
-        );
-
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: 'icon.png',
-            title: 'TEC Detective',
-            message: 'El examen ha comenzado. ¡Buena suerte!',
+        socket = io('http://127.0.0.1:3000', {
+            transports: ['websocket'],
         });
+
+        socket.on('connect', () => {
+            console.log('Socket conectado');
+            socket.emit('unirse_examen', datos);
+            resolve();
+        });
+
+        socket.on('orden_inicio_examen', async () => {
+            await stateManager.updateExamen({
+                fase: EXAM_STATES.EXAMEN,
+            });
+
+            chrome.runtime.sendMessage({ action: 'cambiar_interfaz_examen' });
+
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icon.png',
+                title: 'TEC Detective',
+                message: 'El examen ha comenzado',
+            });
+        });
+    });
+}
+
+function esperarConexion(timeout = 3000) {
+    return new Promise((resolve, reject) => {
+        const start = Date.now();
+
+        const interval = setInterval(() => {
+            if (socket && socket.connected) {
+                clearInterval(interval);
+                resolve();
+            }
+
+            if (Date.now() - start > timeout) {
+                clearInterval(interval);
+                reject();
+            }
+        }, 100);
     });
 }

@@ -1,21 +1,59 @@
 import { stateManager, EXAM_STATES } from './StateManager.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const { fase, usuario, horaInicio } = await stateManager.getSession();
+    const { examen, usuario } = await stateManager.getSession();
+    const fase = examen?.fase || EXAM_STATES.REGISTRO;
 
     // Referencias a contenedores principales
     const formSection = document.getElementById('form-section');
     const statusSection = document.getElementById('status-section');
     const container = document.getElementById('status-card');
 
+    const nControlGroup = document.getElementById('nControl-group');
+    const nombreGroup = document.getElementById('nombre-group');
+    const formTitle = document.getElementById('form-title');
+
+    const userInfo = document.getElementById('user-info');
+    const userNombre = document.getElementById('user-nombre');
+    const userControl = document.getElementById('user-control');
+    const btnLogout = document.getElementById('btn-logout');
+
+    if (usuario) {
+        nControlGroup.style.display = 'none';
+        nombreGroup.style.display = 'none';
+
+        userInfo.style.display = 'block';
+        userNombre.innerText = usuario.nombre;
+        userControl.innerText = usuario.nControl;
+
+        formTitle.innerText = 'Ingresa la clave del examen.';
+    }
+
+    btnLogout.addEventListener('click', async () => {
+        await stateManager.logout();
+
+        const { examen, usuario } = await stateManager.getSession();
+        const fase = examen?.fase || EXAM_STATES.REGISTRO;
+
+        renderizarInterfaz(fase, usuario, examen, container);
+
+        formSection.style.display = 'block';
+        statusSection.style.display = 'none';
+
+        document.getElementById('nControl').value = '';
+        document.getElementById('nombre').value = '';
+        document.getElementById('claveExamen').value = '';
+    });
+
     if (fase !== EXAM_STATES.REGISTRO) {
         formSection.style.display = 'none';
         statusSection.style.display = 'block';
-        renderizarInterfaz(fase, usuario, horaInicio, container);
+        renderizarInterfaz(fase, usuario, examen, container);
     }
 
     const registroForm = document.getElementById('registroForm');
-    registroForm.addEventListener('click', async () => {
+    registroForm.addEventListener('click', async (e) => {
+        e.preventDefault();
         //Creacion de la data para solicitud a la DB
         const data = {
             nControl: document.getElementById('nControl').value,
@@ -30,9 +68,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         const result = await response.json();
-        // Si el resultado esta bien, inicializamos el socket y cambiamos la sesion a modo espera.
-        console.log('Preparacion para mandar mensaje y conexion.');
 
+        // Si el resultado esta bien, inicializamos el socket y cambiamos la sesion a modo espera.
         // Revision de respuesta y logica para comenzar.
         if (response.status === 200) {
             // Impresion de mensaje de reconexion
@@ -40,25 +77,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert(result.message);
             }
 
-            const dataFinal = {
-                ...data,
+            const usuarioData = {
+                nControl: data.nControl,
+                nombre: data.nombre,
+            };
+
+            const examenData = {
+                claveExamen: data.claveExamen,
                 idExamen: result.idExamen,
                 idParticipante: result.idParticipante,
                 rol: 'estudiante',
+                fase: EXAM_STATES.ESPERA,
             };
 
             // Cambio de estado de la sesion (Nuevo ingreso)
-            await stateManager.setSession(EXAM_STATES.ESPERA, dataFinal);
+            await stateManager.setSession(usuarioData, examenData);
 
             // Comunicacion con bakground.js
-            chrome.runtime.sendMessage({ action: 'iniciar_conexion', datos: dataFinal });
-
-            console.log('Mensaje enviado: iniciar_conexion', dataFinal);
+            chrome.runtime.sendMessage({
+                action: 'iniciar_conexion',
+                datos: {
+                    usuario: usuarioData,
+                    examen: examenData,
+                    rol: 'estudiante',
+                },
+            });
 
             // Ocultar formulario y mostrar tarjeta
             formSection.style.display = 'none';
             statusSection.style.display = 'block';
-            renderizarInterfaz(EXAM_STATES.ESPERA, dataFinal, null, container);
+            renderizarInterfaz(EXAM_STATES.ESPERA, usuarioData, examenData, container);
         } else {
             alert('ERROR' + result.message);
         }
@@ -67,13 +115,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Recibir evento para cambiar la interfaz
     chrome.runtime.onMessage.addListener(async (request) => {
         if (request.action === 'cambiar_interfaz_examen') {
-            const { fase, usuario, horaInicio } = await stateManager.getSession();
-            renderizarInterfaz(fase, usuario, horaInicio, container);
+            const { examen, usuario } = await stateManager.getSession();
+            const fase = examen?.fase || EXAM_STATES.REGISTRO;
+
+            renderizarInterfaz(fase, usuario, examen, container);
         }
     });
 });
 
-function renderizarInterfaz(fase, usuario, horaInicio, container) {
+function renderizarInterfaz(fase, usuario, examen, container) {
     if (!container) return;
     // Limpieza de estados/clases del container
     container.className = 'status-card';
@@ -87,7 +137,7 @@ function renderizarInterfaz(fase, usuario, horaInicio, container) {
                 <span class = "status-text">EN ESPERA</span>
                 <span>Por favor no cierres el navegador...</span>
             </div>    
-            <h3>${usuario.claveExamen}</h3>
+            <h3>${examen.claveExamen}</h3>
             <p>Alumno: ${usuario.nombre}</p>
             <p class="hint">El examen comenzará pronto...</p>
         `;
@@ -113,7 +163,7 @@ function renderizarInterfaz(fase, usuario, horaInicio, container) {
             <p class ="student-footer">${usuario.nControl} - ${usuario.nombre}</p>
         `;
         const ejecucionClock = document.getElementById('ejecucion-clock');
-        iniciarCronometro(horaInicio, ejecucionClock);
+        iniciarCronometro(examen.horaInicio, ejecucionClock);
     }
     // ESTADO TERMINADO
     else if (fase === EXAM_STATES.TERMINADO) {

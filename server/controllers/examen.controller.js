@@ -32,7 +32,7 @@ export const validarExamen = async (req, res) => {
                 message: 'Bienvenido al examen',
                 idParticipante: result.rows[0].id,
             });
-        // Manejo de errores por unicidad (PostgreSQL)
+            // Manejo de errores por unicidad (PostgreSQL)
         } catch (dbError) {
             if (dbError.code === '23505') {
                 const result = await pool.query(
@@ -49,7 +49,7 @@ export const validarExamen = async (req, res) => {
                 return res.status(200).json({
                     ok: true,
                     idExamen: idReal,
-                    idPariticpante: result.rows[0].id,
+                    idParticipante: result.rows[0].id,
                     message: 'Reconexion exitosa. Bienvenido de vuelta',
                 });
             }
@@ -67,7 +67,7 @@ export const validarExamen2 = async (req, res) => {
     if (!nControl || !nombre || !claveExamen) {
         return res.status(400).json({
             ok: false,
-            message: 'Datos incompletos'
+            message: 'Datos incompletos',
         });
     }
 
@@ -83,7 +83,7 @@ export const validarExamen2 = async (req, res) => {
         if (examResponse.rows.length === 0) {
             return res.status(401).json({
                 ok: false,
-                message: 'No existe el examen o está inactivo.'
+                message: 'No existe el examen o está inactivo.',
             });
         }
 
@@ -101,19 +101,17 @@ export const validarExamen2 = async (req, res) => {
             [idExamen, nControl, nombre]
         );
 
-        
         return res.status(200).json({
             ok: true,
             idExamen,
             idParticipante: result.rows[0].id,
-            message: 'Bienvenido al examen'
+            message: 'Bienvenido al examen',
         });
-
     } catch (error) {
         console.error(error);
         return res.status(500).json({
             ok: false,
-            message: 'Error en el servidor.'
+            message: 'Error en el servidor.',
         });
     }
 };
@@ -157,10 +155,12 @@ export const obtenerExamenes = async (req, res) => {
 
     try {
         const result = await pool.query(
-            `SELECT * FROM vista_examenes_detalles
+            `
+            SELECT * FROM vista_examenes_detalles
             WHERE profesor_id = $1
             AND deleted_at IS NULL
-            ORDER BY programed_at ASC`,
+            ORDER BY programed_at ASC
+            `,
             [id]
         );
 

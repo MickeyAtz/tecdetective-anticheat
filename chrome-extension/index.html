@@ -9,19 +9,31 @@
     <body>
         <h1>TEC Detective</h1>
         <section id="form-section">
-            <p>Para continuar, agrega tu número de control, tu nombre y la clave del examen.</p>
-            <div class="inputCombo">
+            <p id="form-title">
+                Para continuar, agrega tu número de control, tu nombre y la clave del examen.
+            </p>
+
+            <div id="user-info" style="display: none">
+                <p><strong>Usuario:</strong><span id="user-nombre"></span></p>
+                <p><strong>No. Control: </strong><span id="user-control"></span></p>
+                <button id="btn-logout">Cerrar sesión</button>
+            </div>
+
+            <div class="inputCombo" id="nControl-group">
                 <label for="nControl">Número de control</label>
                 <input type="text" id="nControl" placeholder="Ej: 220110064" required />
             </div>
-            <div class="inputCombo">
+
+            <div class="inputCombo" id="nombre-group">
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" placeholder="Ej: Miguel Angel Alvarez" />
             </div>
-            <div class="inputCombo">
+
+            <div class="inputCombo" style="padding-top: 10px">
                 <label for="claveExamen">Clave del examen</label>
                 <input type="text" id="claveExamen" placeholder="Ej: CMADJQIR1231D" />
             </div>
+
             <button id="registroForm">Entrar</button>
         </section>
 

@@ -11,14 +11,16 @@ class StateManager {
     // guarda el estado actual y datos del usuario
     async setSession(usuarioData = null, examenData = null) {
         return new Promise((resolve) => {
+            const examenFinal = examenData ? { ...examenData } : null;
+
+            if (examenFinal && examenFinal.fase === EXAM_STATES.EXAMEN && !examenFinal.horaInicio) {
+                examenFinal.horaInicio = new Date().toISOString();
+            }
+
             const data = {
-                examen: examenData,
+                examen: examenFinal,
                 usuario: usuarioData,
             };
-
-            if (examenData && examenData.fase === EXAM_STATES.EXAMEN) {
-                data.horaInicio = new Date().toISOString();
-            }
 
             chrome.storage.local.set(data, () => {
                 resolve();
@@ -35,20 +37,21 @@ class StateManager {
                 return resolve({
                     examen: { fase: EXAM_STATES.REGISTRO },
                     usuario: null,
-                    horaInicio: null,
                 });
             }
 
-            chrome.storage.local.get(['examen', 'usuario', 'horaInicio'], (result) => {
+            chrome.storage.local.get(['examen', 'usuario'], (result) => {
                 if (chrome.runtime.lastError) {
                     console.error('Error en el Storage: ', chrome.runtime.lastError);
-                    return resolve({ examen: { fase: EXAM_STATES.REGISTRO }, usuario: null });
+                    return resolve({
+                        examen: { fase: EXAM_STATES.REGISTRO },
+                        usuario: null,
+                    });
                 }
 
                 resolve({
                     examen: result.examen || { fase: EXAM_STATES.REGISTRO },
                     usuario: result.usuario || null,
-                    horaInicio: result.horaInicio || null,
                 });
             });
         });
@@ -57,7 +60,7 @@ class StateManager {
     // BORRRAR SESIÓN DEL EXAMEN
     async clearSession() {
         return new Promise((resolve) => {
-            chrome.storage.local.remove(['examen', 'horaInicio'], () => {
+            chrome.storage.local.remove(['examen'], () => {
                 resolve();
             });
         });
@@ -81,15 +84,13 @@ class StateManager {
             ...nuevosDatos,
         };
 
-        const data = {
-            examen: examenActualizado,
-        };
-
-        if (nuevosDatos.fase === EXAM_STATES.EXAMEN) {
-            data.horaInicio = new Date().toISOString();
+        if (nuevosDatos?.fase === EXAM_STATES.EXAMEN && !examenActualizado.horaInicio) {
+            examenActualizado.horaInicio = new Date().toISOString();
         }
 
-        return chrome.storage.local.set(data);
+        return chrome.storage.local.set({
+            examen: examenActualizado,
+        });
     }
 }
 

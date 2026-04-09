@@ -98,6 +98,24 @@ button:active {
     transform: scale(0.98);
 }
 
+.user-info {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.user-info p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+.user-info strong {
+    color: var(--color-text-primary);
+}
+
 .status-card {
     background: var(--color-bg-tertiary);
     border-radius: 16px;
@@ -192,4 +210,18 @@ button:active {
 }
 .offline {
     background-color: #ef4444;
+}
+
+#btn-logout {
+    margin-top: 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    background-color: #e74c3c;
+    color: white;
+    transition: background 0.2s ease;
+    gap: 10px;
+}
+
+#btn-logout:hover {
+    background-color: #c0392b;
 }

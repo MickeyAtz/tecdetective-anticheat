@@ -22,12 +22,15 @@ document.addEventListener('contextmenu', (e) => {
 });
 
 function enviarAlerta(detalle) {
-    chrome.runtime.sendMessage({
-        action: 'reportar_incidente',
-        datos: {
-            tipo: 'SOSPECHA_TRAMPA',
-            detalle: detalle,
-            timestamp: new Date().toISOString(),
-        },
+    chrome.storage.local.get(['examen'], (result) => {
+        if (!result.examen || result.examen.fase !== 'examen') return;
+        chrome.runtime.sendMessage({
+            action: 'reportar_incidente',
+            datos: {
+                tipo: 'SOSPECHA_TRAMPA',
+                detalle: detalle,
+                timestamp: new Date().toISOString(),
+            },
+        });
     });
 }
