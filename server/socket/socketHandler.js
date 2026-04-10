@@ -1,7 +1,7 @@
 import pool from '../db.js';
 
 export const socketHandler = (io) => {
-    console.log('Socket Handler iinicializado y escuchando...');
+    console.log('Socket Handler inicializado y escuchando...');
 
     io.on('connection', (socket) => {
         console.log('Nueva conexion de socket', socket.id);
