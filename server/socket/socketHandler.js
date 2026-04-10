@@ -10,15 +10,15 @@ export const socketHandler = (io) => {
         socket.on('unirse_examen', (datos) => {
             if (!datos?.examen?.idExamen) return;
 
-            socket.datosUsuario = datos;
+            socket.datosUsuario = datos.usuario;
 
             socket.join(datos.examen.idExamen);
 
             console.log(
-                `Alumno ${datos.usuario?.nombre || 'Profesor'} en la sala: ${datos.examen.idExamen}`
+                `Alumno ${datos.usuario?.nombre_completo || 'Profesor'} en la sala: ${datos.examen.idExamen}`
             );
 
-            if (datos.examen.rol !== 'profesor') {
+            if (datos.rol !== 'profesor') {
                 socket.to(datos.examen.idExamen).emit('nuevo_participante', datos.usuario);
             }
         });
@@ -28,7 +28,7 @@ export const socketHandler = (io) => {
             const socketsEnSala = await io.in(idExamen).fetchSockets();
 
             const lista = socketsEnSala
-                .filter((s) => s.datosUsuario && s.datosUsuario.examen?.rol !== 'profesor')
+                .filter((s) => s.datosUsuario && s.datosUsuario.rol !== 'profesor')
                 .map((s) => s.datosUsuario);
 
             callback(lista);
@@ -72,7 +72,7 @@ export const socketHandler = (io) => {
 
             if (rol === 'profesor') return;
 
-            console.log(`Alumno desconectado: ${usuario.nombre}`);
+            console.log(`Alumno desconectado: ${usuario}`);
 
             socket.to(examen.id).emit('participante_desconectado', {
                 nControl: usuario.nControl,

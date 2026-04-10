@@ -12,6 +12,7 @@ import ExamenMonitorPage from '@/pages/ExamenMonitorPage.jsx';
 import ExamenLobbyPage from '@/pages/ExamenLobbyPage.jsx';
 // Contextos
 import { useUser } from '@/context/UserContext.jsx';
+import { SocketProvider } from '@/context/SocketContext.jsx';
 
 import MockPage from '@/pages/MockPage.jsx';
 
@@ -39,8 +40,10 @@ function App() {
                     <Route path="dashboard" element={<DashboardPage />} />
                     <Route path="examenes/" element={<ExamenPage />} />
                     <Route path="examen/">
-                        <Route path="lobby/:id" element={<ExamenLobbyPage />} />
-                        <Route path="monitor/:id" element={<ExamenMonitorPage />} />
+                        <Route element={<SocketProvider />}>
+                            <Route path="lobby/:id" element={<ExamenLobbyPage />} />
+                            <Route path="monitor/:id" element={<ExamenMonitorPage />} />
+                        </Route>
                         <Route path="resultados/:id" element={<ExamenHistorial />} />
                     </Route>
 

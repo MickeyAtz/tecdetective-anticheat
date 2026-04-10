@@ -13,7 +13,7 @@ const IncidentListItem = ({ incident }) => {
                 <span className={nombreStyle}>{incident.nombre}</span>
                 <span className={descripcionStyle}>{incident.descripcion}</span>
             </div>
-            <span className={fechaYHoraStyle}>{incident.fechaYHora}</span>
+            <span className={fechaYHoraStyle}>{incident.fecha}</span>
         </li>
     );
 };

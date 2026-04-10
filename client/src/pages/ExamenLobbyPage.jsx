@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import { useSocket } from '@/context/SocketContext';
 
 import { cambiarEstadoExamen, getExamenById } from '@/api/examenes.api.js';
 
@@ -12,39 +13,44 @@ const ExamenLobbyPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const socket = useSocket();
+
     const [participantes, setParticipantes] = useState([]);
     const [examen, setExamen] = useState(null);
-    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const newSocket = io('http://localhost:3000');
-        setSocket(newSocket);
+        if (!socket) return;
 
-        newSocket.on('connect', () => {
-            newSocket.emit('unirse_examen', {
+        if (!socket.connected) {
+            socket.connect();
+        }
+
+        const handleConnect = () => {
+            socket.emit('unirse_examen', {
                 usuario: null,
-                examen: {
-                    idExamen: id,
-                },
+                examen: { idExamen: id },
                 rol: 'profesor',
             });
 
-            newSocket.emit('solicitar_conectados', id, (participantesConectados) => {
+            socket.emit('solicitar_conectados', id, (participantesConectados) => {
                 setParticipantes(participantesConectados);
             });
-        });
+        };
 
-        newSocket.on('nuevo_participante', (usuario) => {
+        const handleNuevoParticipante = (usuario) => {
             setParticipantes((prev) => {
                 if (prev.some((p) => p.nControl === usuario.nControl)) return prev;
                 return [...prev, usuario];
             });
-        });
-
-        return () => {
-            newSocket.disconnect();
         };
-    }, [id]);
+
+        if (socket.connected) {
+            handleConnect();
+        }
+
+        socket.on('connect', handleConnect);
+        socket.on('nuevo_participante', handleNuevoParticipante);
+    }, [socket, id]);
 
     useEffect(() => {
         const fetchExamen = async () => {

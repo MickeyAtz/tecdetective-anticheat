@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         userControl.innerText = usuario.nControl;
 
         formTitle.innerText = 'Ingresa la clave del examen.';
+        document.getElementById('nControl').value = usuario.nControl;
+        document.getElementById('nombre').value = usuario.nombre;
     }
 
     btnLogout.addEventListener('click', async () => {

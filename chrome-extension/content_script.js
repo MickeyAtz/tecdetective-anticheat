@@ -27,9 +27,10 @@ function enviarAlerta(detalle) {
         chrome.runtime.sendMessage({
             action: 'reportar_incidente',
             datos: {
-                tipo: 'SOSPECHA_TRAMPA',
-                detalle: detalle,
-                timestamp: new Date().toISOString(),
+                incidente: {
+                    tipo: 'SOSPECHA_TRAMPA',
+                    detalle: detalle,
+                },
             },
         });
     });

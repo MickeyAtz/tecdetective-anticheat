@@ -7,7 +7,7 @@ export const STUDENTS_MOCK = [
     },
     {
         id: 'st-002',
-        nombre: 'Alondra García',
+        nombre: 'Luis García',
         status: 'warning',
         incidentes: [
             {

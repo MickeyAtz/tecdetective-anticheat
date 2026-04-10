@@ -288,13 +288,14 @@ export const getHistorialExamen = async (req, res) => {
     try {
         const [examenResponse, participantesResponse] = await Promise.all([
             pool.query('SELECT * FROM vista_examenes_detalles WHERE id = $1', [id]),
+
             pool.query(
                 `
                 SELECT
                     p.id,
                     p.numero_control,
                     p.nombre_completo AS nombre,
-                    i.id AS incident_id,
+                    i.id AS incidente_id, 
                     i.tipo_evento AS incidente_nombre,
                     i.descripcion AS incidente_desc,
                     i.creado_at AS incidente_fecha
@@ -312,9 +313,8 @@ export const getHistorialExamen = async (req, res) => {
             if (!acumulador[row.id]) {
                 acumulador[row.id] = {
                     id: row.id,
-                    numero_control: row.numero_control,
+                    nControl: row.numero_control,
                     nombre: row.nombre,
-                    estado: row.estado,
                     incidentes: [],
                 };
             }
@@ -322,14 +322,16 @@ export const getHistorialExamen = async (req, res) => {
             if (row.incidente_id) {
                 acumulador[row.id].incidentes.push({
                     id: row.incidente_id,
-                    nombre: row.incidente_nombre,
-                    descripcion: row.incidente_desc,
-                    fechaYHora: row.incidente_fecha,
+                    tipo: row.incidente_nombre,
+                    detalle: row.incidente_desc,
+                    hora: row.incidente_fecha,
                 });
             }
 
             return acumulador;
         }, {});
+
+        console.log(JSON.stringify(participantesAgrupados));
 
         return res.status(200).json({
             examenResult: examenResponse.rows[0],
