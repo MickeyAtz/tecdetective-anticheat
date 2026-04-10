@@ -24,14 +24,17 @@ document.addEventListener('contextmenu', (e) => {
 function enviarAlerta(detalle) {
     chrome.storage.local.get(['examen'], (result) => {
         if (!result.examen || result.examen.fase !== 'examen') return;
+
+        console.log('Enviando alerta plana al background:', detalle);
+
         chrome.runtime.sendMessage({
             action: 'reportar_incidente',
             datos: {
-                incidente: {
-                    tipo: 'SOSPECHA_TRAMPA',
-                    detalle: detalle,
-                },
-            },
+                // DATOS PLANOS: Así el backend los puede leer directo
+                tipo: 'SOSPECHA_TRAMPA',
+                detalle: detalle,
+                timestamp: new Date().toISOString()
+            }
         });
     });
 }

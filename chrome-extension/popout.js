@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 claveExamen: data.claveExamen,
                 idExamen: result.idExamen,
                 idParticipante: result.idParticipante,
-                rol: 'estudiante',
                 fase: EXAM_STATES.ESPERA,
             };
 

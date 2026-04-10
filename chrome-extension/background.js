@@ -17,7 +17,7 @@ async function manejarIncidente(datosIncidente) {
     const { usuario, examen } = await stateManager.getSession();
 
     if (!usuario || !examen) {
-        console.log('No hay sesion activa.');
+        console.log('No hay sesion activa en el background.');
         return;
     }
 
@@ -29,15 +29,14 @@ async function manejarIncidente(datosIncidente) {
     }
 
     socket.emit('notificar_incidente', {
-        ...datosIncidente,
-        nControl: usuario.nControl,
-        nombre: usuario.nombre,
-        claveExamen: examen.claveExamen,
-        idExamen: examen.idExamen,
+        tipo: datosIncidente.tipo,       
+        detalle: datosIncidente.detalle, 
         idParticipante: examen.idParticipante,
+        idExamen: examen.idExamen,
+        nControl: usuario.nControl
     });
 
-    console.log('Incidente enviado');
+    console.log('Incidente enviado al servidor para el alumno:', usuario.nControl);
 }
 
 async function asegurarConexion(datos) {

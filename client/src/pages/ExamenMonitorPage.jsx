@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useSocket } from '@/context/SocketContext';
-import { getExamenById } from '@/api/examenes.api';
+import { getExamenById, getParticipantesEIncidentesByExamen } from '@/api/examenes.api';
 
 import Card from '@/components/molecules/Card.jsx';
 import StudentList from '@/components/molecules/StudentList.jsx';
@@ -14,6 +14,7 @@ const ExamenMonitorPage = () => {
     const [examen, setExamen] = useState(null);
     const [participantes, setParticipantes] = useState([]);
 
+
     useEffect(() => {
         async function fetchData() {
             if (!id) return;
@@ -24,6 +25,25 @@ const ExamenMonitorPage = () => {
                 console.error('Error al obtener los datos del examen: ', err);
             }
         }
+        async function fetchParticipantes() {
+            try {
+                const result = await getParticipantesEIncidentesByExamen(id);
+                
+                const dataLista = result.map(alumno => {
+                    let statusInicial = 'success';
+                    if (alumno.incidentes.length === 1) statusInicial = 'warning';
+                    if (alumno.incidentes.length >= 3) statusInicial = 'danger';
+
+                    return { ...alumno, status: statusInicial };
+                });
+                console.log(dataLista);
+                setParticipantes(dataLista);
+            } catch (error) {
+                console.error('Error al obtener participantes e historial:',error);
+            }
+        }
+
+        fetchParticipantes();
         fetchData();
     }, [id]);
 
@@ -40,44 +60,59 @@ const ExamenMonitorPage = () => {
         }
 
         socket.emit('solicitar_conectados', id, (participantesConectados) => {
-            const participantesIniciales = participantesConectados.map((p) => ({
-                ...p,
-                status: 'success',
-                incidentes: [],
-            }));
-            setParticipantes(participantesIniciales);
-        });
+            setParticipantes((prev) => {
+                return prev.map(p => {
+                    const estadoConectado = participantesConectados.find(c => c.nControl === p.nControl);
+                    if (!estadoConectado) {
+                        return { ...p, status: 'offline' };
+                    }
+                    return p;
+                })
+           })
+       })
 
-        // --- LISTENERS ---
-
+        // Actualizacion de alertas en tiempo real
         const handleAlerta = (dataIncidente) => {
-            setParticipantes((prev) =>
-                prev.map((estudiante) => {
-                    if (estudiante.nControl === dataIncidente.nControl) {
-                        const nuevosIncidentes = [dataIncidente, ...estudiante.incidentes];
+            setParticipantes((prev) => {
+                if (!prev) return [];
+
+                return prev.map((estudiante) => {
+                    const idEstudiante = String(estudiante.nControl || estudiante.ncontrol || "").trim();
+                    const idAlerta = String(dataIncidente.nControl || dataIncidente.ncontrol || "").trim();
+
+                    if (idEstudiante === idAlerta && idEstudiante !== "") {
+                        const nuevoIncidente = {
+                            tipo: dataIncidente.tipo,
+                            detalle: dataIncidente.detalle,
+                            hora: dataIncidente.hora || new Date().toLocaleTimeString()
+                        };
+
+                        const incidentesActualizados = [nuevoIncidente, ...(estudiante.incidentes || [])];
 
                         let nuevoStatus = 'success';
-                        if (nuevosIncidentes.length === 1) nuevoStatus = 'warning';
-                        if (nuevosIncidentes.length >= 2) nuevoStatus = 'danger';
+                        if (incidentesActualizados.length >= 1) nuevoStatus = 'warning';
+                        if (incidentesActualizados.length >= 5) nuevoStatus = 'danger';
 
                         return {
                             ...estudiante,
-                            incidentes: nuevosIncidentes,
-                            status: nuevoStatus,
+                            incidentes: incidentesActualizados,
+                            status: nuevoStatus
                         };
                     }
                     return estudiante;
-                })
-            );
+                });
+            });
+
         };
 
+        // Actualizacion de usuarios en tiempor eal 
         const handleNuevoParticipante = (usuario) => {
             setParticipantes((prev) => {
                 const existe = prev.find((p) => p.nControl === usuario.nControl);
 
                 if (existe) {
                     return prev.map((p) => {
-                        if (p.nControl === usuario.nControl) {
+                        if (String(p.nControl) === String(usuario.nControl)) {
                             let statusRecuperado = 'success';
                             if (p.incidentes.length === 1) statusRecuperado = 'warning';
                             if (p.incidentes.length >= 2) statusRecuperado = 'danger';
@@ -91,6 +126,7 @@ const ExamenMonitorPage = () => {
             });
         };
 
+        // handle desconexion del usuario
         const handleDesconexion = (data) => {
             setParticipantes((prev) =>
                 prev.map((estudiante) => {
@@ -165,7 +201,7 @@ const ExamenMonitorPage = () => {
                     Participantes Activos
                 </h2>
 
-                {participantes.length > 0 ? (
+                {participantes.length > 0 ? (           
                     <StudentList students={participantes} />
                 ) : (
                     <div className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center">

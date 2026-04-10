@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import { useSocket } from '@/context/SocketContext';
 
 import { cambiarEstadoExamen, getExamenById } from '@/api/examenes.api.js';
@@ -44,12 +43,23 @@ const ExamenLobbyPage = () => {
             });
         };
 
+        const handleDesconexion = (data) => {
+            setParticipantes((prev) => prev.filter((p) => p.nControl !== data.nControl))
+        }
+
         if (socket.connected) {
             handleConnect();
         }
 
         socket.on('connect', handleConnect);
         socket.on('nuevo_participante', handleNuevoParticipante);
+        socket.on('participante_desconectado', handleDesconexion);
+
+        return () => {
+            socket.off('connect', handleConnect);
+            socket.off('nuevo_participante', handleNuevoParticipante);
+            socket.off('participante_desconecatdo', handleDesconexion)
+        }
     }, [socket, id]);
 
     useEffect(() => {

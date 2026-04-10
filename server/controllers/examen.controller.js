@@ -291,54 +291,70 @@ export const getHistorialExamen = async (req, res) => {
 
             pool.query(
                 `
-                SELECT
+                SELECT 
                     p.id,
-                    p.numero_control,
-                    p.nombre_completo AS nombre,
-                    i.id AS incidente_id, 
-                    i.tipo_evento AS incidente_nombre,
-                    i.descripcion AS incidente_desc,
-                    i.creado_at AS incidente_fecha
+                    p.numero_control AS "nControl",
+                    MAX(p.nombre_completo) AS nombre,
+                    COALESCE(
+                        json_agg(
+                            json_build_object(
+                                'id', li.id,
+                                'tipo', li.tipo_evento,
+                                'detalle', li.descripcion,
+                                'hora', li.creado_at
+                            )
+                        ) FILTER (WHERE li.id IS NOT NULL),
+                        '[]'
+                    ) AS incidentes
                 FROM participantes p
-                LEFT JOIN logs_incidentes i
-                    ON p.id = i.participante_id
+                LEFT JOIN logs_incidentes li 
+                    ON li.participante_id = p.id
                 WHERE p.examen_id = $1
-                ORDER BY p.nombre_completo ASC
+                GROUP BY p.id, p.numero_control
+                ORDER BY nombre ASC
                 `,
                 [id]
             ),
         ]);
 
-        const participantesAgrupados = participantesResponse.rows.reduce((acumulador, row) => {
-            if (!acumulador[row.id]) {
-                acumulador[row.id] = {
-                    id: row.id,
-                    nControl: row.numero_control,
-                    nombre: row.nombre,
-                    incidentes: [],
-                };
-            }
-
-            if (row.incidente_id) {
-                acumulador[row.id].incidentes.push({
-                    id: row.incidente_id,
-                    tipo: row.incidente_nombre,
-                    detalle: row.incidente_desc,
-                    hora: row.incidente_fecha,
-                });
-            }
-
-            return acumulador;
-        }, {});
-
-        console.log(JSON.stringify(participantesAgrupados));
-
         return res.status(200).json({
             examenResult: examenResponse.rows[0],
-            participantesResult: Object.values(participantesAgrupados),
+            participantesResult: participantesResponse.rows,
         });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error en el servidor.' });
     }
 };
+
+
+export const getParticipantesEIncidentesByExamen = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(`
+            SELECT 
+            p.numero_control AS "nControl",
+            MAX(p.nombre_completo) AS nombre,
+            COALESCE(
+                json_agg(
+                    json_build_object(
+                        'id', li.id,
+                        'tipo', li.tipo_evento,
+                        'detalle', li.descripcion,
+                        'hora', li.creado_at
+                    )
+                ) FILTER (WHERE li.id IS NOT NULL),
+                '[]'
+            ) AS incidentes
+            FROM participantes p
+            LEFT JOIN logs_incidentes li 
+                ON li.participante_id = p.id
+            WHERE p.examen_id = $1
+            GROUP BY p.numero_control;
+            `, [id]);
+        return res.status(200).json( result.rows );
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message: 'Error en el servidor.'})
+    }
+}

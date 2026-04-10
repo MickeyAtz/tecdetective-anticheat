@@ -9,6 +9,7 @@ import {
     eliminarExamen,
     actualizarExamen,
     getHistorialExamen,
+    getParticipantesEIncidentesByExamen,
 } from '../controllers/examen.controller.js';
 
 const router = express.Router();
@@ -28,5 +29,7 @@ router.put('/:id/estado', verifyToken, cambiarEstadoExamen);
 router.delete('/:id', verifyToken, eliminarExamen);
 
 router.get('/resultados/:id', verifyToken, getHistorialExamen);
+
+router.get('/monitoreo/:id', verifyToken, getParticipantesEIncidentesByExamen);
 
 export default router;

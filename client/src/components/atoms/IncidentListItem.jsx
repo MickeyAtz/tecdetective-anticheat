@@ -6,14 +6,12 @@ const IncidentListItem = ({ incident }) => {
     const nombreStyle = `font-semibold text-xs text-text-primary uppercase tracking-tight`;
     const descripcionStyle = `text-[11px] text-text-tertiary mt-0.5`;
     const fechaYHoraStyle = `text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full`;
-
     return (
         <li className={liStyle}>
             <div className={contenedorStyle}>
-                <span className={nombreStyle}>{incident.nombre}</span>
-                <span className={descripcionStyle}>{incident.descripcion}</span>
+                <span className={descripcionStyle}>{incident.detalle}</span>
             </div>
-            <span className={fechaYHoraStyle}>{incident.fecha}</span>
+            <span className={fechaYHoraStyle}>{ new Date(incident.hora).toString('es-Mx')}</span>
         </li>
     );
 };

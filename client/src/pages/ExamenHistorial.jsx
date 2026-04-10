@@ -29,10 +29,10 @@ const ExamenHistorial = () => {
     }
 
     // Informacion de los KPIs (CARDS de datos)
-    const alumnosConIncidentes = participantes.filter((p) => p.incidentes > 0).length;
+    const alumnosConIncidentes = participantes.filter((p) => p.incidentes?.length > 0).length;
 
     const incidentesDetectados = participantes.reduce(
-        (acumulador, p) => acumulador + p.incidentes.length,
+        (acumulador, p) => acumulador + p.incidentes?.length,
         0
     );
 
