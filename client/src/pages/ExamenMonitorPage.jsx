@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import { useSocket } from '@/context/SocketContext';
-import { getExamenById, getParticipantesEIncidentesByExamen } from '@/api/examenes.api';
+import {
+    getExamenById,
+    getParticipantesEIncidentesByExamen,
+    cambiarEstadoExamen,
+} from '@/api/examenes.api';
 
 import Card from '@/components/molecules/Card.jsx';
 import StudentList from '@/components/molecules/StudentList.jsx';
+import Button from '@/components/atoms/Button.jsx';
 
 const ExamenMonitorPage = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const socket = useSocket();
 
     const [examen, setExamen] = useState(null);
     const [participantes, setParticipantes] = useState([]);
-
 
     useEffect(() => {
         async function fetchData() {
@@ -28,8 +33,8 @@ const ExamenMonitorPage = () => {
         async function fetchParticipantes() {
             try {
                 const result = await getParticipantesEIncidentesByExamen(id);
-                
-                const dataLista = result.map(alumno => {
+
+                const dataLista = result.map((alumno) => {
                     let statusInicial = 'success';
                     if (alumno.incidentes.length === 1) statusInicial = 'warning';
                     if (alumno.incidentes.length >= 3) statusInicial = 'danger';
@@ -39,7 +44,7 @@ const ExamenMonitorPage = () => {
                 console.log(dataLista);
                 setParticipantes(dataLista);
             } catch (error) {
-                console.error('Error al obtener participantes e historial:',error);
+                console.error('Error al obtener participantes e historial:', error);
             }
         }
 
@@ -61,15 +66,17 @@ const ExamenMonitorPage = () => {
 
         socket.emit('solicitar_conectados', id, (participantesConectados) => {
             setParticipantes((prev) => {
-                return prev.map(p => {
-                    const estadoConectado = participantesConectados.find(c => c.nControl === p.nControl);
+                return prev.map((p) => {
+                    const estadoConectado = participantesConectados.find(
+                        (c) => c.nControl === p.nControl
+                    );
                     if (!estadoConectado) {
                         return { ...p, status: 'offline' };
                     }
                     return p;
-                })
-           })
-       })
+                });
+            });
+        });
 
         // Actualizacion de alertas en tiempo real
         const handleAlerta = (dataIncidente) => {
@@ -77,17 +84,24 @@ const ExamenMonitorPage = () => {
                 if (!prev) return [];
 
                 return prev.map((estudiante) => {
-                    const idEstudiante = String(estudiante.nControl || estudiante.ncontrol || "").trim();
-                    const idAlerta = String(dataIncidente.nControl || dataIncidente.ncontrol || "").trim();
+                    const idEstudiante = String(
+                        estudiante.nControl || estudiante.ncontrol || ''
+                    ).trim();
+                    const idAlerta = String(
+                        dataIncidente.nControl || dataIncidente.ncontrol || ''
+                    ).trim();
 
-                    if (idEstudiante === idAlerta && idEstudiante !== "") {
+                    if (idEstudiante === idAlerta && idEstudiante !== '') {
                         const nuevoIncidente = {
                             tipo: dataIncidente.tipo,
                             detalle: dataIncidente.detalle,
-                            hora: dataIncidente.hora || new Date().toLocaleTimeString()
+                            hora: dataIncidente.hora || new Date().toLocaleTimeString(),
                         };
 
-                        const incidentesActualizados = [nuevoIncidente, ...(estudiante.incidentes || [])];
+                        const incidentesActualizados = [
+                            nuevoIncidente,
+                            ...(estudiante.incidentes || []),
+                        ];
 
                         let nuevoStatus = 'success';
                         if (incidentesActualizados.length >= 1) nuevoStatus = 'warning';
@@ -96,16 +110,15 @@ const ExamenMonitorPage = () => {
                         return {
                             ...estudiante,
                             incidentes: incidentesActualizados,
-                            status: nuevoStatus
+                            status: nuevoStatus,
                         };
                     }
                     return estudiante;
                 });
             });
-
         };
 
-        // Actualizacion de usuarios en tiempor eal 
+        // Actualizacion de usuarios en tiempor eal
         const handleNuevoParticipante = (usuario) => {
             setParticipantes((prev) => {
                 const existe = prev.find((p) => p.nControl === usuario.nControl);
@@ -163,6 +176,24 @@ const ExamenMonitorPage = () => {
         0
     );
 
+    const handleFinalizarExamen = async () => {
+        const confirmar = window.confirm(
+            'Estás seguro de terminar el examen? Esto cerrará las conexiones de los participantes.'
+        );
+
+        if (!confirmar) return;
+
+        try {
+            await cambiarEstadoExamen(id, 'FINALIZADO');
+
+            socket.emit('profesor_finalizar_examen', { idExamen: id });
+
+            navigate(`/examen/resultados/${id}`);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     if (!examen) return null;
 
     return (
@@ -179,6 +210,9 @@ const ExamenMonitorPage = () => {
                         <span>Materia: {examen.materia_nombre}</span>
                     </div>
                 </div>
+                <Button variant="danger" onClick={handleFinalizarExamen}>
+                    Finalizar Examen
+                </Button>
             </header>
 
             {/* TARJETAS DE RESUMEN */}
@@ -201,7 +235,7 @@ const ExamenMonitorPage = () => {
                     Participantes Activos
                 </h2>
 
-                {participantes.length > 0 ? (           
+                {participantes.length > 0 ? (
                     <StudentList students={participantes} />
                 ) : (
                     <div className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center">

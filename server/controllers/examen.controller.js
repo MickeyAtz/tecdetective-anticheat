@@ -268,7 +268,7 @@ export const cambiarEstadoExamen = async (req, res) => {
             if (estado === 'ACTIVO') {
                 io.to(codigo_sala).emit('orden_inicio_examen');
             } else if (estado === 'FINALIZADO') {
-                io.to(codigo_sala.emit('orden_fin_examen'));
+                io.to(codigo_sala).emit('orden_fin_examen');
             }
         }
 
@@ -327,11 +327,11 @@ export const getHistorialExamen = async (req, res) => {
     }
 };
 
-
 export const getParticipantesEIncidentesByExamen = async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await pool.query(`
+        const result = await pool.query(
+            `
             SELECT 
             p.numero_control AS "nControl",
             MAX(p.nombre_completo) AS nombre,
@@ -351,10 +351,12 @@ export const getParticipantesEIncidentesByExamen = async (req, res) => {
                 ON li.participante_id = p.id
             WHERE p.examen_id = $1
             GROUP BY p.numero_control;
-            `, [id]);
-        return res.status(200).json( result.rows );
+            `,
+            [id]
+        );
+        return res.status(200).json(result.rows);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({message: 'Error en el servidor.'})
+        return res.status(500).json({ message: 'Error en el servidor.' });
     }
-}
+};

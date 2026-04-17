@@ -8,6 +8,9 @@ import ExamenModal from '@/components/organism/ExamenModal.jsx';
 import Modal from '@/components/atoms/Modal.jsx';
 import Alerta from '@/components/atoms/Alerta.jsx';
 import Select from '@/components/atoms/Select.jsx';
+import ExamenList from '@/components/organism/ExamenList.jsx';
+import Input from '@/components/atoms/Input.jsx';
+
 // Importación de APIs
 import { getExamenes, deleteExamen, cambiarEstadoExamen } from '@/api/examenes.api.js';
 import { getGrupos } from '@/api/grupos.api.js';
@@ -30,6 +33,7 @@ export const ExamenPage = () => {
     const [materias, setMaterias] = useState([]);
 
     // filtros
+    const [busqueda, setBusqueda] = useState('');
     const [filtroActual, setFiltroActual] = useState('TODOS'); // 'TODOS', 'PENDIENTE', 'EN_CURSO', 'FINALIZADO'
     const [filtroGrupos, setFiltroGrupos] = useState('TODOS');
     const [filtroMaterias, setFiltroMaterias] = useState('');
@@ -70,22 +74,28 @@ export const ExamenPage = () => {
         fetchGrupos();
     }, []);
 
-    const examenesFiltrados = examenes.filter((examen) => {
-        const pasaEstado =
-            filtroActual === 'TODOS' ||
-            (filtroActual === 'EN_CURSO' &&
-                (examen.estado === 'ESPERA' || examen.estado === 'ACTIVO')) ||
-            examen.estado === filtroActual;
+    const examenesFiltrados = React.useMemo(() => {
+        return examenes.filter((examen) => {
+            const pasaBusqueda = String(examen.titulo || '')
+                .toLowerCase()
+                .includes(String(busqueda || '').toLowerCase());
 
-        const pasaGrupo =
-            filtroGrupos === 'TODOS' || String(examen.grupo_id) === String(filtroGrupos);
+            const pasaEstado =
+                filtroActual === 'TODOS' ||
+                (filtroActual === 'EN_CURSO' &&
+                    (examen.estado === 'ESPERA' || examen.estado === 'ACTIVO')) ||
+                examen.estado === filtroActual;
 
-        const pasaMateria =
-            filtroMaterias === 'TODAS' ||
-            filtroMaterias === '' ||
-            String(examen.materia_id) === String(filtroMaterias);
+            const pasaGrupo =
+                filtroGrupos === 'TODOS' || String(examen.grupo_id) === String(filtroGrupos);
 
-        return pasaEstado && pasaGrupo && pasaMateria;
+            const pasaMateria =
+                filtroMaterias === 'TODAS' ||
+                filtroMaterias === '' ||
+                String(examen.materia_id) === String(filtroMaterias);
+
+            return pasaBusqueda && pasaEstado && pasaGrupo && pasaMateria;
+        });
     });
 
     const handleAbrirModalCrear = () => {
@@ -152,7 +162,7 @@ export const ExamenPage = () => {
     return (
         <div className="p-6 max-w-7xl mx-auto">
             {/* CABECERA */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 ">
                 <div>
                     <h1 className="text-3xl font-extrabold text-text-primary">Mis Exámenes</h1>
                     <p className="text-text-tertiary mt-1">
@@ -170,43 +180,49 @@ export const ExamenPage = () => {
 
             {/* BOTONERA DE FILTROS */}
             <div className="flex overflow-x-auto gap-2 mb-8 pb-2 border-b border-border-primary">
-                <Select
-                    label="Estado"
-                    options={selectEstadoConfig}
-                    value={filtroActual}
-                    onChange={(valor) => setFiltroActual(valor)}
-                />
-                <Select
-                    label="Grupo"
-                    options={opcionesGrupos}
-                    value={filtroGrupos}
-                    onChange={(valor) => handleGrupoChange(valor)}
-                />
-                <Select
-                    label="Materia"
-                    options={opcionesMaterias}
-                    value={filtroMaterias}
-                    onChange={(valor) => setFiltroMaterias(valor)}
-                    disabled={filtroGrupos === 'TODOS'}
-                />
+                <div className="flex-1 min-w-62.5">
+                    <Input
+                        label="Buscar Examen"
+                        type="text"
+                        placeholder="Buscar por título..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target?.value || '')}
+                    />
+                </div>
+                <div className="w-full md:w-auto flex gap-2 overflow-x-auto pb-1 md:pb-0">
+                    <Select
+                        label="Estado"
+                        options={selectEstadoConfig}
+                        value={filtroActual}
+                        onChange={(valor) => setFiltroActual(valor)}
+                    />
+                    <Select
+                        label="Grupo"
+                        options={opcionesGrupos}
+                        value={filtroGrupos}
+                        onChange={(valor) => handleGrupoChange(valor)}
+                    />
+                    <Select
+                        label="Materia"
+                        options={opcionesMaterias}
+                        value={filtroMaterias}
+                        onChange={(valor) => setFiltroMaterias(valor)}
+                        disabled={filtroGrupos === 'TODOS'}
+                    />
+                </div>
             </div>
 
             {/* GRID DE TARJETAS */}
             {examenesFiltrados.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {examenesFiltrados.map((examen) => (
-                        <ExamenCard
-                            key={examen.id}
-                            examen={examen}
-                            onEdit={() => handleAbrirModalEditar(examen)}
-                            onDelete={() => handleDelete(examen.id)}
-                            onStatusChange={handleStatusChange}
-                            onStartExamen={(id) => navigate(`/examen/lobby/${id}`)}
-                            onViewMonitor={(id) => navigate(`/examen/monitor/${id}`)}
-                            onViewResults={(id) => navigate(`/examen/resultados/${id}`)}
-                        />
-                    ))}
-                </div>
+                <ExamenList
+                    examenes={examenesFiltrados}
+                    onEdit={handleAbrirModalEditar}
+                    onDelete={handleDelete}
+                    onStatusChange={handleStatusChange}
+                    onStartExamen={(id) => navigate(`/examen/lobby/${id}`)}
+                    onViewMonitor={(id) => navigate(`/examen/monitor/${id}`)}
+                    onViewResults={(id) => navigate(`/examen/resultados/${id}`)}
+                />
             ) : (
                 <div className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center">
                     <p className="text-slate-500 text-lg font-medium">

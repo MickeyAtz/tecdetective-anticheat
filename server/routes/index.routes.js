@@ -7,6 +7,7 @@ import materiaRouter from './materias.routes.js';
 import grupoRouter from './grupos.routes.js';
 import examenRouter from './examen.routes.js';
 import grupoMateriasRouter from './grupo_materias.routes.js';
+import dashboardRouter from './dashboard.routes.js';
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use('/materia', materiaRouter);
 router.use('/grupo', grupoRouter);
 router.use('/examen', examenRouter);
 router.use('/grupo_materias', grupoMateriasRouter);
+router.use('/dashboard', dashboardRouter);
 
 export default router;

@@ -28,6 +28,8 @@ export default function Table({
     renderCell,
     renderActions,
     rowsPerPage = 6,
+    paginacion = true,
+    busqueda = true,
 }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -78,17 +80,19 @@ export default function Table({
 
     return (
         <div className={STYLES.wrapper}>
-            <div className={STYLES.searchContainer}>
-                {/* Buscador */}
-                <Input
-                    placeholder="Buscar"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                />
-            </div>
+            {busqueda && (
+                <div className={STYLES.searchContainer}>
+                    {/* Buscador */}
+                    <Input
+                        placeholder="Buscar"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                    />
+                </div>
+            )}
 
             <div className={STYLES.tableContainer}>
                 <table className={STYLES.table}>
@@ -135,30 +139,31 @@ export default function Table({
                 </table>
             </div>
 
-            {/* Paginación */}
-            <div className={STYLES.pagination}>
-                <div className={STYLES.pageInfo}>
-                    Página {currentPage} de {totalPages || 1}
+            {paginacion && (
+                <div className={STYLES.pagination}>
+                    <div className={STYLES.pageInfo}>
+                        Página {currentPage} de {totalPages || 1}
+                    </div>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage((prev) => prev - 1)}
+                        >
+                            Anterior
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            disabled={currentPage === totalPages || totalPages === 0}
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
+                        >
+                            Siguiente
+                        </Button>
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button
-                        variant="secondary"
-                        size="sm"
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage((prev) => prev - 1)}
-                    >
-                        Anterior
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        size="sm"
-                        disabled={currentPage === totalPages || totalPages === 0}
-                        onClick={() => setCurrentPage((prev) => prev + 1)}
-                    >
-                        Siguiente
-                    </Button>
-                </div>
-            </div>
+            )}
         </div>
     );
 }

@@ -30,7 +30,7 @@ export const socketHandler = (io) => {
             const lista = socketsEnSala
                 .filter((s) => s.datosConexion && s.datosConexion.rol !== 'profesor')
                 .map((s) => s.datosConexion.usuario);
-            
+
             callback(lista);
         });
 
@@ -65,6 +65,16 @@ export const socketHandler = (io) => {
             }
         });
 
+        socket.on('profesor_cancela_lobby', (data) => {
+            console.log('El profesor canceló el lobby del examen: ', data.idExamen);
+            io.to(data.idExamen).emit('lobby_cancelado_por_profesor');
+        });
+
+        socket.on('profesor_finaliza_examen', (data) => {
+            console.log('El profesor finalizó el examen: ', data.idExamen);
+            io.to(data.idExamen).emit('orden_fin_examen');
+        });
+
         socket.on('disconnect', () => {
             if (!socket.datosConexion) return;
 
@@ -75,7 +85,7 @@ export const socketHandler = (io) => {
             console.log(`Alumno desconectado: ${usuario?.nombre}`);
 
             socket.to(examen.idExamen).emit('participante_desconectado', {
-                nControl: usuario.nControl
+                nControl: usuario.nControl,
             });
         });
     });

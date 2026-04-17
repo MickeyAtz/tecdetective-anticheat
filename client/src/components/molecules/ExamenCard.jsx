@@ -179,4 +179,4 @@ const ExamenCard = ({
     );
 };
 
-export default ExamenCard;
+export default React.memo(ExamenCard);

@@ -93,8 +93,8 @@ const MateriasPage = () => {
     };
 
     return (
-        <div className="p-6 flex flex-col gap-6">
-            <div className="flex items-center justify-between w-full mb-2 border-b border-border-primary gap-y-4 ">
+        <div className="p-6 flex flex-col">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border-primary">
                 <div>
                     <h1 className="text-3xl font-extrabold text-text-primary">
                         Gestión de Materias

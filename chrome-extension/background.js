@@ -29,11 +29,11 @@ async function manejarIncidente(datosIncidente) {
     }
 
     socket.emit('notificar_incidente', {
-        tipo: datosIncidente.tipo,       
-        detalle: datosIncidente.detalle, 
+        tipo: datosIncidente.tipo,
+        detalle: datosIncidente.detalle,
         idParticipante: examen.idParticipante,
         idExamen: examen.idExamen,
-        nControl: usuario.nControl
+        nControl: usuario.nControl,
     });
 
     console.log('Incidente enviado al servidor para el alumno:', usuario.nControl);
@@ -73,6 +73,40 @@ function conectarServidor(datos) {
                 title: 'TEC Detective',
                 message: 'El examen ha comenzado',
             });
+        });
+
+        socket.on('orden_fin_examen', async () => {
+            console.log('El profesor finalizo el examen.');
+
+            await stateManager.clearSession();
+
+            chrome.runtime.sendMessage({ action: 'cambiar_interfaz_registro' });
+
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icon.png',
+                title: 'TEC Detective',
+                message: 'El examen ha finalizado. El monitoreo se ha desactivado.',
+            });
+
+            if (socket) socket.disconnect();
+        });
+
+        socket.on('lobby_cancelado_por_profesor', async () => {
+            console.log('El profesor cancelo el lobby.');
+
+            await stateManager.clearSession();
+
+            chrome.runtime.sendMessage({ action: 'cambiar_interfaz_registro' });
+
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icon.png',
+                title: 'TEC Detective',
+                message: 'La sala de espera ha sido cancelada por el profesor.',
+            });
+
+            if (socket) socket.disconnect();
         });
     });
 }

@@ -44,8 +44,8 @@ const ExamenLobbyPage = () => {
         };
 
         const handleDesconexion = (data) => {
-            setParticipantes((prev) => prev.filter((p) => p.nControl !== data.nControl))
-        }
+            setParticipantes((prev) => prev.filter((p) => p.nControl !== data.nControl));
+        };
 
         if (socket.connected) {
             handleConnect();
@@ -58,8 +58,8 @@ const ExamenLobbyPage = () => {
         return () => {
             socket.off('connect', handleConnect);
             socket.off('nuevo_participante', handleNuevoParticipante);
-            socket.off('participante_desconecatdo', handleDesconexion)
-        }
+            socket.off('participante_desconecatdo', handleDesconexion);
+        };
     }, [socket, id]);
 
     useEffect(() => {
@@ -90,6 +90,24 @@ const ExamenLobbyPage = () => {
         }
     };
 
+    const handleCancelarLobby = async () => {
+        const confirmar = window.confirm('Estas seguro de cancelar el lobby?');
+
+        if (!confirmar) return;
+
+        try {
+            await cambiarEstadoExamen(id, 'PENDIENTE');
+
+            if (socket) {
+                socket.emit('profesor_cancela_lobby', { idExamen: id });
+            }
+
+            navigate('/dashboard');
+        } catch (error) {
+            console.error('Error al cancelar el lobby: ', error);
+        }
+    };
+
     if (!examen) return null;
 
     return (
@@ -105,6 +123,9 @@ const ExamenLobbyPage = () => {
                         variant="primary"
                     >
                         Comenzar Examen
+                    </Button>
+                    <Button onClick={handleCancelarLobby} variant="danger">
+                        Cancelar Examen
                     </Button>
                 </div>
             </Card>
