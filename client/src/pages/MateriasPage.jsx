@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 import { getMaterias, createMateria, modifyMateria, deleteMateria } from '@/api/materias.api.js';
 
@@ -47,6 +49,7 @@ const MateriasPage = () => {
             }));
             setMaterias(formatedMateria);
         } catch (err) {
+            toast.error('No se pudo cargar las materias');
             setMaterias([]);
         }
     };
@@ -56,12 +59,14 @@ const MateriasPage = () => {
         try {
             if (editData) {
                 await modifyMateria(formData, editData.id);
+                toast.success('Materia actualizada correctamente');
             } else {
-                console.log(formData);
                 await createMateria(formData);
+                toast.success('Materia creada correctamente');
             }
             fetchMaterias();
         } catch (err) {
+            toast.error('Error al ingresar/editar materia');
             console.error(err);
         } finally {
             setEditData(null);
@@ -85,15 +90,22 @@ const MateriasPage = () => {
         try {
             await deleteMateria(deleteData.id);
             fetchMaterias();
+            toast.success('Materia eliminada correctamente');
         } catch (err) {
             console.error(err);
+            toast.error('Error al eliminar materia');
         } finally {
             setDeleteData(null);
         }
     };
 
     return (
-        <div className="p-6 flex flex-col">
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="p-6 flex flex-col"
+        >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border-primary">
                 <div>
                     <h1 className="text-3xl font-extrabold text-text-primary">
@@ -180,7 +192,7 @@ const MateriasPage = () => {
                     </div>
                 </div>
             </Modal>
-        </div>
+        </motion.div>
     );
 };
 

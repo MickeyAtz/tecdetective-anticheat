@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 import { getHistorialExamen } from '@/api/examenes.api.js';
 
@@ -41,7 +43,12 @@ const ExamenHistorial = () => {
     if (!examen) return null;
 
     return (
-        <div className="p-6 max-w-7xl mx-auto flex flex-col gap-6">
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="p-6 max-w-7xl mx-auto flex flex-col gap-6"
+        >
             {/* INFORMACION DEL EXAMEN */}
             <header className="flex justify-between items-start border-b border-border-primary pb-4">
                 <div>
@@ -91,7 +98,7 @@ const ExamenHistorial = () => {
                     </p>
                 </div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

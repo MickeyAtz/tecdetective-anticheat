@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { Toaster } from 'sonner';
 //Importacion de componentes (navbar)
 import Navbar from '@/components/molecules/Navbar';
 
@@ -31,6 +32,7 @@ const MainLayout = () => {
             <main className={containerStyle}>
                 <Outlet />
             </main>
+            <Toaster position="bottom-right" richColors theme={isDarkMode ? 'dark' : 'light'} />
         </div>
     );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getGrupos, createGrupo, deleteGrupo, editGrupo } from '@/api/grupos.api.js';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 import Card from '@/components/molecules/Card.jsx';
 import Button from '@/components/atoms/Button.jsx';
@@ -55,6 +57,7 @@ const GruposPage = () => {
             }));
             setGrupos(grupoFechaFormateada);
         } catch (err) {
+            toast.error('Error al cargar los grupos');
             console.error('Error al obtener grupos: ', err);
             setGrupos([]);
         }
@@ -63,15 +66,17 @@ const GruposPage = () => {
     const handleSubmit = async (formData) => {
         try {
             if (editData) {
-                console.log(formData, editData);
                 await editGrupo(formData, editData.id);
+                toast.success('Grupo actualizado correctamente');
             } else {
                 await createGrupo(formData);
+                toast.success('Grupo creado correctamente');
             }
             setIsModalOpen(false);
             setEditData(null);
             fetchGrupos();
         } catch (err) {
+            toast.error('Error al crear/actualizar grupo');
             console.error(err);
         }
     };
@@ -91,15 +96,22 @@ const GruposPage = () => {
         try {
             await deleteGrupo(deleteData);
             fetchGrupos();
+            toast.success('Grupo eliminado correctamente');
         } catch (err) {
             console.error(err);
+            toast.error('Error al eliminar el grupo');
         } finally {
             setDeleteData(null);
         }
     };
 
     return (
-        <div className="p-6 flex flex-col">
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="p-6 flex flex-col"
+        >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border-primary">
                 <div>
                     <h1 className="text-text-primary text-3xl font-extrabold">Gestión de Grupos</h1>
@@ -212,7 +224,7 @@ const GruposPage = () => {
                     <SubjectManager grupoId={grupoMaterias.id} nombreGrupo={grupoMaterias.nombre} />
                 )}
             </Modal>
-        </div>
+        </motion.div>
     );
 };
 

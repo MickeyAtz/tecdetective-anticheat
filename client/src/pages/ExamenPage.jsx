@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 // Importación de componentes
 import Button from '@/components/atoms/Button.jsx';
@@ -28,6 +30,9 @@ export const ExamenPage = () => {
     // informacion de los examenes
     const [examenes, setExamenes] = useState([]);
     const [deleteData, setDeleteData] = useState(null);
+
+    const [isLoading, setIsLoading] = useState(true);
+
     // informacion de los selects
     const [grupos, setGrupos] = useState([]);
     const [materias, setMaterias] = useState([]);
@@ -48,6 +53,7 @@ export const ExamenPage = () => {
             setExamenes(data);
         } catch (error) {
             console.error('Error al traer exámenes', error);
+            toast.error('No se pudieron cargar los exámenes');
         }
     };
 
@@ -57,6 +63,7 @@ export const ExamenPage = () => {
             setGrupos(data);
         } catch (err) {
             console.error('Error al cargar grupos: ', err);
+            toast.error('Hubo un problema al cargar los grupos');
         }
     };
 
@@ -66,12 +73,18 @@ export const ExamenPage = () => {
             setMaterias(data);
         } catch (err) {
             console.error('Error al cargar materias del grupo: ', err);
+            toast.error('No se pudieron cargar las materias');
         }
     };
 
     useEffect(() => {
-        fetchExamenes();
-        fetchGrupos();
+        const loadData = async () => {
+            setIsLoading(true);
+            await Promise.all([fetchExamenes(), fetchGrupos()]);
+            setIsLoading(false);
+        };
+
+        loadData();
     }, []);
 
     const examenesFiltrados = React.useMemo(() => {
@@ -119,11 +132,14 @@ export const ExamenPage = () => {
 
     const handleConfirmDelete = async () => {
         if (!deleteData) return;
+
         try {
             await deleteExamen(deleteData);
+            toast.success('Examen eliminado correctamente');
             fetchExamenes();
         } catch (err) {
             console.error(err);
+            toast.error('Error al eliminar el examen');
         } finally {
             setDeleteData(null);
         }
@@ -132,9 +148,11 @@ export const ExamenPage = () => {
     const handleStatusChange = async (id, nuevoEstado) => {
         try {
             await cambiarEstadoExamen(id, nuevoEstado);
+            toast.success('Estado actualizado correctamente');
             fetchExamenes();
         } catch (error) {
             console.error('Error al cambiar estado', error);
+            toast.error('No se pudo actualizar el estado del examen');
         }
     };
 
@@ -160,7 +178,12 @@ export const ExamenPage = () => {
     ];
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="p-6 max-w-7xl mx-auto"
+        >
             {/* CABECERA */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 ">
                 <div>
@@ -224,11 +247,15 @@ export const ExamenPage = () => {
                     onViewResults={(id) => navigate(`/examen/resultados/${id}`)}
                 />
             ) : (
-                <div className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center"
+                >
                     <p className="text-slate-500 text-lg font-medium">
                         No hay exámenes en esta categoría.
                     </p>
-                </div>
+                </motion.div>
             )}
 
             {/* MODAL DE CREACIÓN / EDICIÓN */}
@@ -267,7 +294,7 @@ export const ExamenPage = () => {
                     </div>
                 </div>
             </Modal>
-        </div>
+        </motion.div>
     );
 };
 

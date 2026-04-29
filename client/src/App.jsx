@@ -14,8 +14,6 @@ import ExamenLobbyPage from '@/pages/ExamenLobbyPage.jsx';
 import { useUser } from '@/context/UserContext.jsx';
 import { SocketProvider } from '@/context/SocketContext.jsx';
 
-import MockPage from '@/pages/MockPage.jsx';
-
 // Importacion de layouts
 import AuthLayout from '@/components/templates/AuthLayout.jsx';
 import MainLayout from '@/components/templates/MainLayout.jsx';
@@ -51,7 +49,6 @@ function App() {
                         <Route path="grupos" element={<GruposPage />} />
                         <Route path="materias" element={<MateriasPage />} />
                     </Route>
-                    <Route path="pruebas" element={<MockPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

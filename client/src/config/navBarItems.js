@@ -10,5 +10,4 @@ export const navBarItems = [
             { label: 'Grupos', path: '/gestion/grupos' },
         ],
     },
-    { id: 4, label: 'Pruebas', path: '/pruebas' },
 ];

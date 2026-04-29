@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '@/context/SocketContext';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 import { cambiarEstadoExamen, getExamenById } from '@/api/examenes.api.js';
 
@@ -85,6 +87,7 @@ const ExamenLobbyPage = () => {
             socket.emit('iniciar_examen_profesor', configInicio);
 
             await cambiarEstadoExamen(id, 'ESPERA');
+            toast.success('Examen comenzado...');
 
             navigate(`/examen/monitor/${id}`);
         }
@@ -101,6 +104,7 @@ const ExamenLobbyPage = () => {
             if (socket) {
                 socket.emit('profesor_cancela_lobby', { idExamen: id });
             }
+            toast.success('Examen cancelado');
 
             navigate('/dashboard');
         } catch (error) {
@@ -111,7 +115,12 @@ const ExamenLobbyPage = () => {
     if (!examen) return null;
 
     return (
-        <div className="p-6 max-w-4xl mx-auto">
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="p-6 max-w-4xl mx-auto"
+        >
             <Card>
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="tex-3xl font-bold text-text-primary">
@@ -148,7 +157,7 @@ const ExamenLobbyPage = () => {
                     <StudentList students={participantes} onlyData={true} />
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 };
 

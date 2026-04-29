@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 import {
     LineChart,
@@ -26,6 +28,7 @@ const DashboardPage = () => {
                 const dashboardData = await getDashboardData();
                 setData(dashboardData);
             } catch (error) {
+                toast.error('Error al cargar la información');
                 console.error('Error al cargar los datos del dashboard:', error);
             } finally {
                 setLoading(false);
@@ -54,7 +57,12 @@ const DashboardPage = () => {
     if (loading) return <div className="p-6 text-text-primary">Cargando panel...</div>;
 
     return (
-        <div className="p-6 space-y-6 bg-bg-primary min-h-screen">
+        <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="p-6 space-y-6 bg-bg-primary min-h-screen"
+        >
             <h1 className="text-2xl font-bold text-text-primary">Panel de Control</h1>
 
             {/* KPIs */}
@@ -155,7 +163,7 @@ const DashboardPage = () => {
                     />
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
