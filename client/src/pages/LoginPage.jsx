@@ -83,7 +83,16 @@ const Login = () => {
                     onChange={handleChange}
                     required
                 ></Input>
-                <div className="flex justify-end">
+                <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4">
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => navigate('/auth/register')}
+                    >
+                        Crear cuenta
+                    </Button>
+
                     <Button type="submit" size="lg" title="Inicio de sesión" disabled={isLoading}>
                         {isLoading ? 'Ingresando...' : 'Ingresar'}
                     </Button>

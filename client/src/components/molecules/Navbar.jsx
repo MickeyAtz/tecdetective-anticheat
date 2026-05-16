@@ -4,14 +4,13 @@ import NavDropDown from '@/components/atoms/NavDropDown.jsx';
 import Button from '@/components/atoms/Button.jsx';
 import { useUser } from '@/context/UserContext.jsx';
 
+import logo from '@/img/icon.png';
+
 import { navBarItems } from '@/config/navBarItems.js';
 import TopbarDropdown from '@/components/organism/TopbarDropdown';
 
-const Navbar = ({ isDarkMode, toggleDarkMode }) => {
-    const navStyle = `fixed top-0 left-0 w-full h-16 bg-bg-secondary border-b border-border-primary/60 shadow-sm flex items-center justify-between px-8 z-50`;
-    const brandStyle = `text-xl font-bold text-brand-primary`;
-    const themeButtonStyle =
-        'rounded-lg border border-border-primary bg-bg-primary px-3 py-1.5 text-sm font-medium text-text-primary transition-all hover:border-brand-primary/50 hover:text-brand-primary shadow-sm';
+const Navbar = ({ isDarkMode, toggleDarkMode, openModal, openModalPassword }) => {
+    const navStyle = `fixed top-0 left-0 w-full h-16 bg-bg-secondary border-b border-border-primary/60 shadow-sm flex items-center justify-between gap-6 px-8 z-50`;
     const navLinkStyle = 'flex items-center gap-1.5 list-none m-0 p-0';
 
     const { user, setUser, setToken } = useUser();
@@ -20,10 +19,23 @@ const Navbar = ({ isDarkMode, toggleDarkMode }) => {
         setUser(null);
     };
 
-    // TODO Agregar logica de navegacion, definir los elementos que llevara y agregarlos
     return (
         <nav className={navStyle}>
-            <span className={brandStyle}>TEC Detective</span>
+            <div className="flex items-center gap-3 shrink-0">
+                {/* LOGO */}
+                <img
+                    src={logo}
+                    alt="Tec Detective"
+                    className={`w-15 h-15 object-contain ${isDarkMode ? 'invert' : ''}`}
+                />
+
+                {/* BRANDING */}
+                <div className="flex flex-col leading-tight">
+                    <span className="text-lg font-bold text-text-primary">TEC Detective</span>
+
+                    <span className="text-xs text-text-secondary">Sistema de monitoreo</span>
+                </div>
+            </div>
 
             <div className="flex items-center gap-4">
                 <ul className={navLinkStyle}>
@@ -52,6 +64,8 @@ const Navbar = ({ isDarkMode, toggleDarkMode }) => {
                     onLogout={handleLogOut}
                     toggleTheme={toggleDarkMode}
                     isDarkMode={isDarkMode}
+                    openModal={openModal}
+                    openModalPassword={openModalPassword}
                 ></TopbarDropdown>
             </div>
         </nav>

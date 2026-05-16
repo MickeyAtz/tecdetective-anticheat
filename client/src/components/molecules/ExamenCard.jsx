@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Button from '@/components/atoms/Button.jsx';
+import { getHistorialExamen } from '@/api/examenes.api.js';
+import { exportarExamen } from '@/utils/exportToExcel.js';
 
+import { toast } from 'sonner';
 import {
     CalendarDays,
     Users,
     BookOpen,
     KeyRound,
     Timer,
-    Edit2,
-    Trash2,
     Eye,
     BarChart3,
     DoorOpen,
+    Download,
 } from 'lucide-react';
 
 // Configuración de status
@@ -48,6 +50,8 @@ const ExamenCard = ({
     onViewResults,
     onStartExamen,
 }) => {
+    const [isExporting, setIsExporting] = useState(false);
+
     const {
         id,
         titulo,
@@ -69,6 +73,30 @@ const ExamenCard = ({
         hour: '2-digit',
         minute: '2-digit',
     });
+
+    const handleExportClick = async () => {
+        if (isExporting) return;
+
+        try {
+            setIsExporting(true);
+            // Llamada a tu API (importa getHistorialExamen)
+            const result = await getHistorialExamen(id);
+
+            if (!result.participantesResult || result.participantesResult.length === 0) {
+                toast.error('No hay alumnos registrados en este examen.');
+                return;
+            }
+
+            // Llamada al utilitario (importa exportarExamen)
+            exportarExamen(result.examenResult, result.participantesResult);
+            toast.success('¡Excel generado con éxito!');
+        } catch (error) {
+            console.error('Error exportando:', error);
+            toast.error('Hubo un fallo al obtener los datos del servidor.');
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     return (
         <div className="flex flex-col rounded-2xl p-5 shadow-sm hover:shadow-md transition bg-bg-secondary border border-border-primary">
@@ -167,12 +195,27 @@ const ExamenCard = ({
                 )}
 
                 {estado === 'FINALIZADO' && (
-                    <button
-                        onClick={() => onViewResults(id)}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-border-primary text-text-primary font-semibold hover:bg-bg-tertiary transition"
-                    >
-                        <BarChart3 size={18} /> Ver Resultados
-                    </button>
+                    <div className="flex flex-col gap-3 mt-2">
+                        <button
+                            onClick={() => onViewResults(id)}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-border-primary text-text-primary font-semibold hover:bg-bg-tertiary transition-colors"
+                        >
+                            <BarChart3 size={18} /> Ver Resultados
+                        </button>
+
+                        <button
+                            onClick={handleExportClick}
+                            disabled={isExporting}
+                            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 font-bold transition-all duration-300 ease-in-out ${
+                                isExporting
+                                    ? 'border-border-secondary text-text-tertiary bg-bg-tertiary cursor-wait opacity-70'
+                                    : 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white hover:shadow-md'
+                            }`}
+                        >
+                            <Download size={18} className={isExporting ? 'animate-bounce' : ''} />
+                            {isExporting ? 'Generando...' : 'Exportar Excel'}
+                        </button>
+                    </div>
                 )}
             </div>
         </div>

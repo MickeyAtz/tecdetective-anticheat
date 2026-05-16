@@ -14,6 +14,10 @@ import {
 import Card from '@/components/molecules/Card.jsx';
 import StudentList from '@/components/molecules/StudentList.jsx';
 import Button from '@/components/atoms/Button.jsx';
+import ExamenHeader from '@/components/organism/ExamenHeader.jsx';
+import StatsCard from '@/components/atoms/StatsCards.jsx';
+import ExamenSection from '@/components/organism/ExamenSection.jsx';
+import EmptyState from '@/components/atoms/EmptyState';
 
 const ExamenMonitorPage = () => {
     const navigate = useNavigate();
@@ -189,7 +193,7 @@ const ExamenMonitorPage = () => {
         try {
             await cambiarEstadoExamen(id, 'FINALIZADO');
 
-            socket.emit('profesor_finalizar_examen', { idExamen: id });
+            socket.emit('profesor_finaliza_examen', { idExamen: id });
 
             navigate(`/examen/resultados/${id}`);
         } catch (error) {
@@ -204,55 +208,44 @@ const ExamenMonitorPage = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="p-6 max-w-7xl mx-auto flex flex-col gap-6"
+            className="max-w-7xl mx-auto p-6 flex flex-col gap-6"
         >
-            {/* INFORMACION DEL EXAMEN */}
-            <header className="flex justify-between items-start border-b border-border-primary pb-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-text-primary">
-                        Monitoreo del examen: {examen.titulo}
-                    </h1>
-                    <div className="text-sm text-text-secondary mt-1 justify-between grid grid-cols md:grid-cols-3 gap-4">
-                        <span>Duracion del examen: {examen.duracion_minutos} min</span>
-                        <span>Grupo: {examen.grupo_nombre}</span>
-                        <span>Materia: {examen.materia_nombre}</span>
-                    </div>
-                </div>
-                <Button variant="danger" onClick={handleFinalizarExamen}>
-                    Finalizar Examen
-                </Button>
-            </header>
+            {/* HEADER */}
+            <ExamenHeader
+                type="monitor"
+                examen={examen}
+                primaryAction={
+                    <Button variant="danger" size="lg" onClick={handleFinalizarExamen}>
+                        Finalizar examen
+                    </Button>
+                }
+            />
 
-            {/* TARJETAS DE RESUMEN */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card title="Total de Participantes">
-                    <p className="text-3xl font-bold text-text-primary">{participantes.length}</p>
-                </Card>
-                <Card title="Incidentes detectados">
-                    <p
-                        className={`text-3xl font-bold ${totalIncidentesGlobales > 0 ? 'text-red-600' : 'text-green-600'}`}
-                    >
-                        {totalIncidentesGlobales}
-                    </p>
-                </Card>
+            {/* KPIs */}
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <StatsCard title="Participantes activos" value={participantes.length} />
+
+                <StatsCard
+                    title="Incidentes detectados"
+                    value={totalIncidentesGlobales}
+                    color={totalIncidentesGlobales > 0 ? 'text-red-600' : 'text-green-600'}
+                />
+
+                <StatsCard
+                    title="Desconectados"
+                    value={participantes.filter((p) => p.status === 'offline').length}
+                    color="text-yellow-600"
+                />
             </section>
 
-            {/* LISTA DESPLEGABLE DE PARTICIPANTES (AHORA OCUPA TODO EL ANCHO) */}
-            <section className="bg-bg-primary rounded-xl p-4 shadow-sm border border-border-primary">
-                <h2 className="text-xl font-semibold mb-6 text-text-primary">
-                    Participantes Activos
-                </h2>
-
+            {/* LISTA DE PARTICIPANTES */}
+            <ExamenSection title="Monitoreo de participantes">
                 {participantes.length > 0 ? (
                     <StudentList students={participantes} />
                 ) : (
-                    <div className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center">
-                        <p className="text-text-tertiary text-lg font-medium">
-                            No se encontraron participantes.
-                        </p>
-                    </div>
+                    <EmptyState message="No se encontraron participantes conectados." />
                 )}
-            </section>
+            </ExamenSection>
         </motion.div>
     );
 };

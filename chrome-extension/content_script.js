@@ -16,7 +16,6 @@ document.addEventListener('copy', () => {
 });
 
 document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
     console.log('Intento de abrir menú contextual (clic derecho)');
     enviarAlerta('Intento de abrir menu contextual (clic derecho)');
 });
@@ -33,8 +32,8 @@ function enviarAlerta(detalle) {
                 // DATOS PLANOS: Así el backend los puede leer directo
                 tipo: 'SOSPECHA_TRAMPA',
                 detalle: detalle,
-                timestamp: new Date().toISOString()
-            }
+                timestamp: new Date().toISOString(),
+            },
         });
     });
 }

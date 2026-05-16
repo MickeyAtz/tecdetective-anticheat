@@ -6,9 +6,12 @@ import { motion } from 'framer-motion';
 
 import { cambiarEstadoExamen, getExamenById } from '@/api/examenes.api.js';
 
-import Card from '@/components/molecules/Card.jsx';
 import Button from '@/components/atoms/Button.jsx';
 import StudentList from '@/components/molecules/StudentList.jsx';
+import ExamenHeader from '@/components/organism/ExamenHeader.jsx';
+import ExamenSection from '@/components/organism/ExamenSection.jsx';
+import StatsCard from '@/components/atoms/StatsCards.jsx';
+import EmptyState from '@/components/atoms/EmptyState.jsx';
 
 const ExamenLobbyPage = () => {
     const { id } = useParams();
@@ -113,50 +116,46 @@ const ExamenLobbyPage = () => {
     };
 
     if (!examen) return null;
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="p-6 max-w-4xl mx-auto"
+            transition={{ duration: 0.3 }}
+            className="max-w-7xl mx-auto p-6 flex flex-col gap-6"
         >
-            <Card>
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="tex-3xl font-bold text-text-primary">
-                        Sala de espera del examen: {examen.titulo}
-                    </h1>
+            <ExamenHeader
+                type="lobby"
+                examen={examen}
+                primaryAction={
                     <Button
+                        variant="primary"
+                        size="lg"
                         onClick={handleIniciarExamen}
                         disabled={participantes.length === 0}
-                        variant="primary"
                     >
-                        Comenzar Examen
+                        Iniciar examen
                     </Button>
-                    <Button onClick={handleCancelarLobby} variant="danger">
-                        Cancelar Examen
+                }
+                secondaryAction={
+                    <Button variant="danger" size="lg" onClick={handleCancelarLobby}>
+                        Cancelar
                     </Button>
-                </div>
-            </Card>
+                }
+            />
 
-            <div className="space-y-6 py-6">
-                <div className="flex items-center gap-4 border-b pb-4">
-                    <h2 className="text-xl font-semibold text-text-secondary">
-                        Participantes Conectados
-                    </h2>
-                    <span>{participantes.length}</span>
-                </div>
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <StatsCard title="Participantes conectados" value={participantes.length} />
 
-                {participantes.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 bg-bg-secondary rounded-2xl border border-dashed border-border-primary">
-                        <p className="text-text-secondary font-medium italic">
-                            Esperando conexiones desde la extensión...
-                        </p>
-                    </div>
-                ) : (
+                <StatsCard title="Estado" value="Esperando" color="text-blue-600" />
+            </section>
+
+            <ExamenSection title="Participantes conectados">
+                {participantes.length > 0 ? (
                     <StudentList students={participantes} onlyData={true} />
+                ) : (
+                    <EmptyState message="Esperando conexiones desde la extensión..." />
                 )}
-            </div>
+            </ExamenSection>
         </motion.div>
     );
 };

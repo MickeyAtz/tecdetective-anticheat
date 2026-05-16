@@ -4,9 +4,14 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
 import { getHistorialExamen } from '@/api/examenes.api.js';
+import { exportarExamen } from '@/utils/exportToExcel';
 
 import StudentList from '@/components/molecules/StudentList.jsx';
-import Card from '@/components/molecules/Card.jsx';
+import ExamenHeader from '@/components/organism/ExamenHeader.jsx';
+import ExamenSection from '@/components/organism/ExamenSection.jsx';
+import StatsCard from '@/components/atoms/StatsCards.jsx';
+import EmptyState from '@/components/atoms/EmptyState.jsx';
+import Button from '@/components/atoms/Button.jsx';
 
 const ExamenHistorial = () => {
     const { id } = useParams();
@@ -38,6 +43,16 @@ const ExamenHistorial = () => {
         0
     );
 
+    const handleExportarDatos = async () => {
+        try {
+            exportarExamen(examen, participantes);
+            toast.success('Exportación realizada con éxito');
+        } catch (err) {
+            console.error(err);
+            toast.error('Hubo un fallo al obtener los datos del servidor.');
+        }
+    };
+
     const totalAlumnos = participantes.length;
 
     if (!examen) return null;
@@ -47,57 +62,50 @@ const ExamenHistorial = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="p-6 max-w-7xl mx-auto flex flex-col gap-6"
+            className="max-w-7xl mx-auto p-6 flex flex-col gap-6"
         >
-            {/* INFORMACION DEL EXAMEN */}
-            <header className="flex justify-between items-start border-b border-border-primary pb-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-text-primary">
-                        Historial del examen: {examen.titulo}
-                    </h1>
-                    <p className="text-sm text-text-secondary mt-1">
-                        Aplicado el: {new Date(examen.programed_at).toLocaleDateString('es-MX')} |
-                        Duracion: {examen.duracion_minutos}
-                        Materia: Materia del examen Grupo: Grupo del examen
-                    </p>
-                </div>
-                <div className="bg-bg-tertiary text-status-success boder border-border-primary px-3 py-1 rounded-full text-sm font-medium">
-                    Finalizado
-                </div>
-            </header>
+            {/* HEADER */}
+            <ExamenHeader
+                type="historial"
+                examen={examen}
+                primaryAction={
+                    <Button variant="primary" size="lg" onClick={handleExportarDatos}>
+                        Exportar datos
+                    </Button>
+                }
+            />
 
-            {/* TARJETAS DE RESUMEN */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card title="Total Participantes">
-                    <p className="text-3xl font-semibold text-brand-primary">{totalAlumnos}</p>
-                </Card>
+            {/* KPIs */}
+            <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <StatsCard title="Participantes" value={totalAlumnos} />
 
-                <Card title="Alumnos con Incidentes">
-                    <p className="text-3xl font-semibold text-status-warning">
-                        {alumnosConIncidentes}
-                    </p>
-                </Card>
+                <StatsCard
+                    title="Con incidentes"
+                    value={alumnosConIncidentes}
+                    color="text-yellow-600"
+                />
 
-                <Card title="Alertas Detectadas">
-                    <p className="text-3xl font-semibold text-status-danger">
-                        {incidentesDetectados}
-                    </p>
-                </Card>
+                <StatsCard
+                    title="Alertas detectadas"
+                    value={incidentesDetectados}
+                    color="text-red-600"
+                />
+
+                <StatsCard
+                    title="Fecha"
+                    value={new Date(examen.programed_at).toLocaleDateString('es-MX')}
+                    color="text-zinc-600"
+                />
             </section>
 
-            {/* TABLA DE PARTICIPANTES */}
-            {totalAlumnos > 0 ? (
-                <section className="flex flex-col gap-4">
-                    <h2 className="text-lg font-bold text-text-primary">Registro de Alumnos</h2>
+            {/* PARTICIPANTES */}
+            <ExamenSection title="Registro de alumnos">
+                {totalAlumnos > 0 ? (
                     <StudentList students={participantes} />
-                </section>
-            ) : (
-                <div className="bg-bg-primary-50 border-2 border-dashed border-border-primary rounded-2xl p-20 text-center">
-                    <p className="text-text-tertiary text-lg font-medium">
-                        No se encontraron participantes.
-                    </p>
-                </div>
-            )}
+                ) : (
+                    <EmptyState message="No se encontraron participantes registrados." />
+                )}
+            </ExamenSection>
         </motion.div>
     );
 };

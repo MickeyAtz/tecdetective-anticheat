@@ -17,6 +17,7 @@ const RegisterPage = () => {
         password: '',
         confirmPassword: '',
     });
+
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -65,7 +66,7 @@ const RegisterPage = () => {
             }
         } catch (error) {
             if (!error?.response) {
-                setError('Servidor sin respuseta.');
+                setError('Servidor sin respuesta.');
             } else if (error.response?.status === 409) {
                 setError('El correo ya se encuentra en uso.');
             } else {

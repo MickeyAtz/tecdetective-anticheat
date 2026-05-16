@@ -25,7 +25,6 @@ export const createMateria = async (req, res) => {
 };
 
 export const modifyMateria = async (req, res) => {
-
     const { nombre } = req.body;
     const idMateria = req.body.id;
 

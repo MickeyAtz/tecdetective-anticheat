@@ -57,7 +57,7 @@ label {
 input {
     padding: 10px 14px;
     border: 2px solid transparent;
-    border-radius: 12px; /* Redondez consistente */
+    border-radius: 12px; 
     background-color: var(--color-bg-tertiary);
     color: var(--color-text-primary);
     outline: none;

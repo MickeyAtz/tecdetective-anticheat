@@ -32,7 +32,7 @@ export const createProfesor = async (req, res) => {
 
 // Editar profesor
 export const modifyProfesor = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.user;
     const { nombre, email } = req.body;
 
     try {
@@ -82,6 +82,28 @@ export const getProfesores = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ message: 'Error en el servidor.' });
+    }
+};
+
+export const changePassword = async (req, res) => {
+    const { id } = req.user;
+    const { password } = req.body;
+
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        await pool.query(
+            `
+                UPDATE profesores SET password_hash = $2 WHERE id = $1
+            `,
+            [id, hashedPassword]
+        );
+
+        return res.status(200).json({ message: 'Contraseña actualizada correctamente.' });
+    } catch (err) {
+        console.log(err);
         return res.status(500).json({ message: 'Error en el servidor.' });
     }
 };

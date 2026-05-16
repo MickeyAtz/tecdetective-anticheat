@@ -156,10 +156,6 @@ function renderizarInterfaz(fase, usuario, examen, container) {
                     <small>Transcurrido: </small>
                     <div id = "ejecucion-clock">00:00:00</div>
                 </div>
-                <div class="timer-box">
-                    <small>Cierre: </small>
-                    <div id="hora-fin">--:--</div>
-                </div>
             </div>
             <p class ="student-footer">${usuario.nControl} - ${usuario.nombre}</p>
         `;

@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import Button from '@/components/atoms/Button.jsx';
 
-const TopbarDropdown = ({ user, onLogout, toggleTheme, isDarkMode }) => {
+const TopbarDropdown = ({
+    user,
+    onLogout,
+    toggleTheme,
+    isDarkMode,
+    openModal,
+    openModalPassword,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -42,13 +48,17 @@ const TopbarDropdown = ({ user, onLogout, toggleTheme, isDarkMode }) => {
                     </div>
                     <div className="py-1">
                         <button
-                            onClick={() => {
-                                console.log('Navegando al perfil...');
-                                setIsOpen(false);
-                            }}
+                            onClick={openModal}
                             className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors duration-200"
                         >
                             Mi Perfil
+                        </button>
+
+                        <button
+                            onClick={openModalPassword}
+                            className="w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors duration-200"
+                        >
+                            Cambiar contraseña
                         </button>
 
                         <button

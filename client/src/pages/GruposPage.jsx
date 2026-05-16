@@ -3,7 +3,6 @@ import { getGrupos, createGrupo, deleteGrupo, editGrupo } from '@/api/grupos.api
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
-import Card from '@/components/molecules/Card.jsx';
 import Button from '@/components/atoms/Button.jsx';
 import Table from '@/components/organism/Table.jsx';
 import Modal from '@/components/atoms/Modal.jsx';

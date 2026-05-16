@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Card from '@/components/molecules/Card';
 
+import logo from '@/img/icon.png';
+//import logoNegativo from '@/img/iconNegativo.png';
+
 const AuthLayout = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const savedTheme = localStorage.getItem('theme');
@@ -38,14 +41,26 @@ const AuthLayout = () => {
                 </button>
                 <div className={innerContainerStyle}>
                     <Card
-                        title="Tec Detective"
-                        subtitle="Panel de Monitoreo"
                         footer={
                             <p className="text-xs text-text-tertiary">
                                 © 2026 ITSJ - Todos los derechos reservados.
                             </p>
                         }
                     >
+                        <div className="flex flex-col items-center text-center mb-8">
+                            <img
+                                src={logo}
+                                alt="Tec Detective"
+                                className={`w-20 h-20 object-contain ${isDarkMode ? 'invert' : ''}`}
+                            />
+
+                            <h1 className="text-3xl font-bold text-text-primary">Tec Detective</h1>
+
+                            <p className="text-text-secondary mt-2 max-w-sm">
+                                Plataforma de monitoreo y supervisión de exámenes
+                            </p>
+                        </div>
+
                         <Outlet />
                     </Card>
                 </div>
