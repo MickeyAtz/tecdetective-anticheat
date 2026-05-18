@@ -28,8 +28,8 @@ const ExamenHistorial = () => {
         try {
             const result = await getHistorialExamen(id);
             setExamen(result.examenResult);
+            console.log(result.examenResult);
             setParticipantes(result.participantesResult);
-            console.log(result.participantesResult);
         } catch (err) {
             console.error('Error al obtener los datos: ', err);
         }

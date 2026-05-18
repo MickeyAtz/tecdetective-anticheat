@@ -12,6 +12,7 @@ import ExamenHeader from '@/components/organism/ExamenHeader.jsx';
 import ExamenSection from '@/components/organism/ExamenSection.jsx';
 import StatsCard from '@/components/atoms/StatsCards.jsx';
 import EmptyState from '@/components/atoms/EmptyState.jsx';
+import Modal from '@/components/atoms/Modal.jsx';
 
 const ExamenLobbyPage = () => {
     const { id } = useParams();
@@ -21,6 +22,8 @@ const ExamenLobbyPage = () => {
 
     const [participantes, setParticipantes] = useState([]);
     const [examen, setExamen] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (!socket) return;
@@ -97,10 +100,6 @@ const ExamenLobbyPage = () => {
     };
 
     const handleCancelarLobby = async () => {
-        const confirmar = window.confirm('Estas seguro de cancelar el lobby?');
-
-        if (!confirmar) return;
-
         try {
             await cambiarEstadoExamen(id, 'PENDIENTE');
 
@@ -137,7 +136,7 @@ const ExamenLobbyPage = () => {
                     </Button>
                 }
                 secondaryAction={
-                    <Button variant="danger" size="lg" onClick={handleCancelarLobby}>
+                    <Button variant="danger" size="lg" onClick={() => setIsModalOpen(true)}>
                         Cancelar
                     </Button>
                 }
@@ -156,6 +155,19 @@ const ExamenLobbyPage = () => {
                     <EmptyState message="Esperando conexiones desde la extensión..." />
                 )}
             </ExamenSection>
+            <Modal isOpen={isModalOpen} title="Confirmar Cancelación">
+                <div>
+                    <br />
+                    <p>¿Estás seguro de cancelar el examen?</p>
+                    <br />
+                </div>
+                <div className="flex justify-end gap-3 mt-4">
+                    <Button variant="danger" size="md" onClick={handleCancelarLobby}>
+                        Sí, continuar
+                    </Button>
+                    <Button onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                </div>
+            </Modal>
         </motion.div>
     );
 };

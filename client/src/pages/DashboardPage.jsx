@@ -38,6 +38,7 @@ const DashboardPage = () => {
         fetchDashboardData();
     }, []);
 
+
     const upcomingColumns = [
         { label: 'Examen', field: 'name' },
         { label: 'Materia', field: 'subject' },
@@ -63,8 +64,12 @@ const DashboardPage = () => {
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="p-6 space-y-6 bg-bg-primary min-h-screen"
         >
-            <h1 className="text-2xl font-bold text-text-primary">Panel de Control</h1>
-
+            <div>
+                <h1 className="text-3xl font-extrabold text-text-primary">Panel de Monitoreo</h1>
+                <p className="text-text-tertiary mt-2 mb-2">
+                    Gestión de métricas, análisis de telemetría y control de integridad académica.
+                </p>
+            </div>
             {/* KPIs */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card title="Integridad del Grupo" subtitle="Promedio de alertas por examen">

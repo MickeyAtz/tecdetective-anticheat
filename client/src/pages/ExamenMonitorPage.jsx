@@ -17,7 +17,8 @@ import Button from '@/components/atoms/Button.jsx';
 import ExamenHeader from '@/components/organism/ExamenHeader.jsx';
 import StatsCard from '@/components/atoms/StatsCards.jsx';
 import ExamenSection from '@/components/organism/ExamenSection.jsx';
-import EmptyState from '@/components/atoms/EmptyState';
+import EmptyState from '@/components/atoms/EmptyState.jsx';
+import Modal from '@/components/atoms/Modal.jsx';
 
 const ExamenMonitorPage = () => {
     const navigate = useNavigate();
@@ -26,6 +27,7 @@ const ExamenMonitorPage = () => {
 
     const [examen, setExamen] = useState(null);
     const [participantes, setParticipantes] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -184,12 +186,6 @@ const ExamenMonitorPage = () => {
     );
 
     const handleFinalizarExamen = async () => {
-        const confirmar = window.confirm(
-            'Estás seguro de terminar el examen? Esto cerrará las conexiones de los participantes.'
-        );
-
-        if (!confirmar) return;
-
         try {
             await cambiarEstadoExamen(id, 'FINALIZADO');
 
@@ -215,7 +211,7 @@ const ExamenMonitorPage = () => {
                 type="monitor"
                 examen={examen}
                 primaryAction={
-                    <Button variant="danger" size="lg" onClick={handleFinalizarExamen}>
+                    <Button variant="danger" size="lg" onClick={() => setIsModalOpen(true)}>
                         Finalizar examen
                     </Button>
                 }
@@ -246,6 +242,19 @@ const ExamenMonitorPage = () => {
                     <EmptyState message="No se encontraron participantes conectados." />
                 )}
             </ExamenSection>
+            <Modal isOpen={isModalOpen} title="Finalizar examen">
+                <div>
+                    <br />
+                    <p>¿Estás seguro de finalizar el examen?</p>
+                    <br />
+                </div>
+                <div className="flex justify-end gap-3 mt-4">
+                    <Button onClick={handleFinalizarExamen} variant="danger">
+                        Si, finalizar examen
+                    </Button>
+                    <Button onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                </div>
+            </Modal>
         </motion.div>
     );
 };

@@ -67,6 +67,13 @@ const ExamenHeader = ({ type = 'lobby', examen, primaryAction, secondaryAction }
                                 <strong>Materia:</strong> {examen.materia_nombre}
                             </span>
                         )}
+
+                        {examen?.codigo_acceso && (
+                            <span>
+                                <strong>Codigo de acceso: </strong>
+                                {examen.codigo_acceso}
+                            </span>
+                        )}
                     </div>
                 </div>
 
